@@ -26,7 +26,7 @@ body {
     padding: 0;
     list-style: none;
 }
-#keyboard li {
+#keyboard div {
     float: left;
     margin: 0 5px 5px 0;
     width: 40px;

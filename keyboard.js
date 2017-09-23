@@ -3,6 +3,18 @@ $(function(){
         shift = false,
         capslock = false;
 
+    // Get Keyboard Region
+    var keyboardRegion = document.getElementById('keyboardRegion');
+    console.log(keyboardRegion);
+
+    //Create new Region Object
+    var myRegion = new ZingTouch.Region(keyboardRegion);
+    myRegion.bind(keyboardRegion, 'pinch', function(e){
+        console.log(e.detail);
+    });
+
+
+
     $('#keyboard li').click(function(){
         var $this = $(this),
             character = $this.html(); // If it's a lowercase letter, nothing happens to this variable

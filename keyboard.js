@@ -18,17 +18,18 @@ $(function(){
         var keyboardRegion = document.getElementById('keyboard');         // Get Keyboard Region DOM element
 
         //attach event listener for pan (touch and drag event)
+
         activeRegion.bind(keyboardRegion, 'pan', function(e){
-            writeToTextPad(e, 'pan');
+            monitorPanMotion(e);
         });
 
         //attach event listener for tap( similar to the click function)
         activeRegion.bind(keyboardRegion, 'tap', function(e){
-            writeToTextPad(e, 'tap');
+            writeToTextPad(e);
         });
     };
 
-    function writeToTextPad(event, gestureName){
+    function writeToTextPad(event){
         console.log(event);
         var target = event.detail.events['0'].originalEvent.target;
         //var target= event.detail.events["0"].originalEvent.path["0"];
@@ -39,7 +40,7 @@ $(function(){
                 addCharacterToTextPad(target);
                 break;
             case 2:
-                addSpaceToTextPad();
+                addSpaceToTextPad(target);
                 break;
             case 3:
                 deleteLastCharacterFromTextPad(target);
@@ -54,14 +55,14 @@ $(function(){
         var operation = null;
         var className =target.className;
 
-        if(className === 'letter'){
+        if(className.includes('letter')){
             operation = 1;
         }
-        if(className === 'space'){
+        if(className.includes('space')){
             operation = 2;
         }
 
-        if(operation === 'delete'){
+        if(className.includes('delete')){
             operation = 3
         }
         return operation;
@@ -79,5 +80,13 @@ $(function(){
         $write.html(html.substr(0, html.length - 1));
     }
 
+    function addSpaceToTextPad(target){
+        // Add space to text pad
+        $write.html($write.html() + " ");
+    }
+
+    function monitorPanMotion(event){
+        writeToTextPad(event);
+    }
     init();
 });

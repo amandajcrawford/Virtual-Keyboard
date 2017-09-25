@@ -1,76 +1,83 @@
+/*
+*
+* */
+
 $(function(){
-    var $write = $('#write'),
-        shift = false,
-        capslock = false;
+    var $write = $('#write');
+    var browser = navigator.appName; // will need to get more efficient name
 
-    function getEventCharacter(e){
-        var $this = $(this);
-        console.log(e);
-        var topTargetNode= e.detail.events["0"].originalEvent.path["0"];
+    //Initialization function
+    var init = function(){
+        setupEventListeners();
+    };
 
-        if(topTargetNode.className === 'letter'){
-            character = topTargetNode.innerHTML;
-        }
-        //character = e.detail.events["0"].originalEvent.path["0"].innerHTML; // If it's a lowercase letter, nothing happens to this variable
-        //console.log(e.events["0"].originalEvent.target.nodeType);
-        console.log(e.detail.events["0"].originalEvent.path["0"].text);
-        // Shift keys
-        if ($this.hasClass('left-shift') || $this.hasClass('right-shift')) {
-            $('.letter').toggleClass('uppercase');
-            $('.symbol span').toggle();
+    var setupEventListeners = function(){
+        //Setup the active region for the touch events
+        var containerElement = document.getElementById('container');        // Get Container Region
+        var activeRegion = new ZingTouch.Region(containerElement);
+        var keyboardRegion = document.getElementById('keyboard');         // Get Keyboard Region DOM element
 
-            shift = (shift === true) ? false : true;
-            capslock = false;
-            return false;
-        }
+        //attach event listener for pan (touch and drag event)
+        activeRegion.bind(keyboardRegion, 'pan', function(e){
+            writeToTextPad(e, 'pan');
+        });
 
-        // Caps lock
-        if ($this.hasClass('capslock')) {
-            $('.letter').toggleClass('uppercase');
-            capslock = true;
-            return false;
-        }
+        //attach event listener for tap( similar to the click function)
+        activeRegion.bind(keyboardRegion, 'tap', function(e){
+            writeToTextPad(e, 'tap');
+        });
+    };
 
-        // Delete
-        if ($this.hasClass('delete')) {
-            var html = $write.html();
+    function writeToTextPad(event, gestureName){
+        console.log(event);
+        var target = event.detail.events['0'].originalEvent.target;
+        //var target= event.detail.events["0"].originalEvent.path["0"];
+        var operationType = getOperationType(target);
 
-            $write.html(html.substr(0, html.length - 1));
-            return false;
-        }
-
-        // Special characters
-        if ($this.hasClass('symbol')) character = $('span:visible', $this).html();
-        if ($this.hasClass('space')) character = ' ';
-        if ($this.hasClass('tab')) character = "\t";
-        if ($this.hasClass('return')) character = "\n";
-
-        // Uppercase letter
-        if ($this.hasClass('uppercase')) character = character.toUpperCase();
-
-        // Remove shift once a key is clicked.
-        if (shift === true) {
-            $('.symbol span').toggle();
-            if (capslock === false) $('.letter').toggleClass('uppercase');
-
-            shift = false;
+        switch(operationType){
+            case 1:
+                addCharacterToTextPad(target);
+                break;
+            case 2:
+                addSpaceToTextPad();
+                break;
+            case 3:
+                deleteLastCharacterFromTextPad(target);
+                break;
+            default:
+                break;
         }
 
+    }
+
+    function getOperationType(target){
+        var operation = null;
+        var className =target.className;
+
+        if(className === 'letter'){
+            operation = 1;
+        }
+        if(className === 'space'){
+            operation = 2;
+        }
+
+        if(operation === 'delete'){
+            operation = 3
+        }
+        return operation;
+    }
+
+    function addCharacterToTextPad(target){
         // Add the character
+        var character = target.innerHTML;
         $write.html($write.html() + character);
     }
 
-    // Get Keyboard Region
-    var containerElement = document.getElementById('container');
-    console.log(containerElement);
-    var activeRegion = new ZingTouch.Region(containerElement);
-    var keyboardRegion = document.getElementById('keyboard');
+    function deleteLastCharacterFromTextPad(){
+        // Delete
+        var html = $write.html();
+        $write.html(html.substr(0, html.length - 1));
+    }
 
-    activeRegion.bind(keyboardRegion, 'pan', function(e){
-            getEventCharacter(e);
-    });
-
-    activeRegion.bind(keyboardRegion, 'tap', function(e){
-        getEventCharacter(e);
-    });
+    init();
 });

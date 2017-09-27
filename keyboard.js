@@ -4,7 +4,9 @@
 
 $(function(){
     var $write = $('#write');
+    $write.html("");
     var browser = navigator.appName; // will need to get more efficient name
+    var previousCharacter;
 
     //Initialization function
     var init = function(){
@@ -70,7 +72,10 @@ $(function(){
     function addCharacterToTextPad(target){
         // Add the character
         var character = target.innerHTML;
-        $write.html($write.html() + character);
+        if(previousCharacter !== character){
+            $write.html($write.html() + character);
+        }
+        previousCharacter = character;
     }
 
     function deleteLastCharacterFromTextPad(){

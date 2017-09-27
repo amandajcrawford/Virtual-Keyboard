@@ -22,6 +22,7 @@ $(function(){
             writeToTextPad(e, 'pan');
         });
 
+
         //attach event listener for tap( similar to the click function)
         activeRegion.bind(keyboardRegion, 'tap', function(e){
             writeToTextPad(e, 'tap');

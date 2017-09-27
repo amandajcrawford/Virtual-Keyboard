@@ -7,6 +7,7 @@ $(function(){
     $write.html("");
     var browser = navigator.appName; // will need to get more efficient name
     var previousCharacter;
+    var currentWord = "";
 
     //Initialization function
     var init = function(){
@@ -73,16 +74,28 @@ $(function(){
         // Add the character
         var character = target.innerHTML;
         if(previousCharacter !== character){
+            currentWord += character;
             $write.html($write.html() + character);
+            predictWords();
         }
         previousCharacter = character;
     }
 
+    function addSpaceToTextPad(){
+        // Delete
+        var html = $write.html();
+        currentWord = " "; //the start of a new word
+        $write.html($write.html() + " ");
+    };
     function deleteLastCharacterFromTextPad(){
         // Delete
         var html = $write.html();
+        currentWord = currentWord.substr(currentWord.length - 1);
         $write.html(html.substr(0, html.length - 1));
     }
 
+    function predictWords(){
+
+    }
     init();
 });

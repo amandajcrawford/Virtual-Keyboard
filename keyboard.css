@@ -38,7 +38,7 @@ body {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
 }
-.capslock, .tab, .left-shift {
+.capslock, .tab, .left-shift, .capslock2 {
     clear: left;
 }
 #keyboard .tab, #keyboard .delete {
@@ -47,8 +47,15 @@ body {
 #keyboard .capslock {
     width: 80px;
 }
+#keyboard .capslock2 {
+    width: 90px;
+}
 #keyboard .return {
     width: 77px;
+}
+#keyboard .extra {
+    clear: left;
+    width: 130px;
 }
 #keyboard .left-shift {
     width: 95px;
@@ -69,7 +76,7 @@ body {
 .on {
     display: none;
 }
-#keyboard li:hover {
+#keyboard div:hover {
     position: relative;
     top: 1px;
     left: 1px;

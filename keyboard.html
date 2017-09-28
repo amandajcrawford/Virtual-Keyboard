@@ -9,71 +9,87 @@
 <body>
 
 <div id="container">
-    <textarea id="write" rows="6" cols="60"></textarea>
-    <div id="keyboardRegion">
-    <ul id="keyboard">
-<!--        <div class="symbol"><span class="off">`</span><span class="on">~</span></div>
-        <div class="symbol"><span class="off">1</span><span class="on">!</span></div>
-        <div class="symbol"><span class="off">2</span><span class="on">@</span></div>
-        <div class="symbol"><span class="off">3</span><span class="on">#</span></div>
-        <div class="symbol"><span class="off">4</span><span class="on">$</span></div>
-        <div class="symbol"><span class="off">5</span><span class="on">%</span></div>
-        <div class="symbol"><span class="off">6</span><span class="on">^</span></div>
-        <div class="symbol"><span class="off">7</span><span class="on">&amp;</span></div>
-        <div class="symbol"><span class="off">8</span><span class="on">*</span></div>
-        <div class="symbol"><span class="off">9</span><span class="on">(</span></div>
-        <div class="symbol"><span class="off">0</span><span class="on">)</span></div>
-        <div class="symbol"><span class="off">-</span><span class="on">_</span></div>
-        <div class="symbol"><span class="off">=</span><span class="on">+</span></div>-->
-        <div class="delete lastitem">delete</div>
-<!--        <div class="tab" id="demo">tab</div>-->
-        <div class="letter">q</div>
-        <div class="letter">w</div>
-        <div class="letter">e</div>
-        <div class="letter">r</div>
-        <div class="letter">t</div>
-        <div class="letter">y</div>
-        <div class="letter">u</div>
-        <div class="letter">i</div>
-        <div class="letter">o</div>
-        <div class="letter">p</div>
-        <div class="symbol"><span class="off">[</span><span class="on">{</span></div>
-        <div class="symbol"><span class="off">]</span><span class="on">}</span></div>
-        <div class="symbol lastitem"><span class="off">\</span><span class="on">|</span></div>
-        <div class="capslock">caps lock</div>
-        <div class="letter">a</div>
-        <div class="letter">s</div>
-        <div class="letter">d</div>
-        <div class="letter">f</div>
-        <div class="letter">g</div>
-        <div class="letter">h</div>
-        <div class="letter">j</div>
-        <div class="letter">k</div>
-        <div class="letter">l</div>
-        <div class="symbol"><span class="off">;</span><span class="on">:</span></div>
-        <div class="symbol"><span class="off">'</span><span class="on">&quot;</span></div>
-        <div class="return lastitem">return</div>
-<!--        <div class="left-shift">shift</div>-->
-        <div class="letter">z</div>
-        <div class="letter">x</div>
-        <div class="letter">c</div>
-        <div class="letter">v</div>
-        <div class="letter">b</div>
-        <div class="letter">n</div>
-        <div class="letter">m</div>
-        <div class="symbol"><span class="off">,</span><span class="on">&lt;</span></div>
-        <div class="symbol"><span class="off">.</span><span class="on">&gt;</span></div>
-        <div class="symbol"><span class="off">/</span><span class="on">?</span></div>
-<!--        <div class="right-shift lastitem">shift</div>-->
-        <li class="space lastitem">&nbsp;</li>
+        <textarea id="write" rows="6" cols="60"></textarea>
+        <div id="keyboardRegion">
+                <ul id="keyboard">
+                        <!--        <div class="symbol"><span class="off">`</span><span class="on">~</span></div>
+                                <div class="symbol"><span class="off">1</span><span class="on">!</span></div>
+                                <div class="symbol"><span class="off">2</span><span class="on">@</span></div>
+                                <div class="symbol"><span class="off">3</span><span class="on">#</span></div>
+                                <div class="symbol"><span class="off">4</span><span class="on">$</span></div>
+                                <div class="symbol"><span class="off">5</span><span class="on">%</span></div>
+                                <div class="symbol"><span class="off">6</span><span class="on">^</span></div>
+                                <div class="symbol"><span class="off">7</span><span class="on">&amp;</span></div>
+                                <div class="symbol"><span class="off">8</span><span class="on">*</span></div>
+                                <div class="symbol"><span class="off">9</span><span class="on">(</span></div>
+                                <div class="symbol"><span class="off">0</span><span class="on">)</span></div>
+                                <div class="symbol"><span class="off">-</span><span class="on">_</span></div>
+                                <div class="symbol"><span class="off">=</span><span class="on">+</span></div>-->
+                        <div class="delete lastitem" style="visibility:hidden">delete</div>
+                        <!--        <div class="tab" id="demo">tab</div>-->
+                        <div class="letter">q</div>
+                        <div class="letter">w</div>
+                        <div class="letter">e</div>
+                        <div class="letter">r</div>
+                        <div class="letter">t</div>
+                        <div class="letter">y</div>
+                        <div class="letter">u</div>
+                        <div class="letter">i</div>
+                        <div class="letter">o</div>
+                        <div class="letter">p</div>
+                        <div class="delete lastitem">delete</div>
+                        <div class="on"><span class="off">[</span><span class="on">{</span></div>
+                        <div class="on"><span class="off">]</span><span class="on">}</span></div>
+                        <div class="on"><span class="off">\</span><span class="on">|</span></div>
+                        <div class="capslock" style="visibility:hidden">caps lock</div>
+                        <div class="letter">a</div>
+                        <div class="letter">s</div>
+                        <div class="letter">d</div>
+                        <div class="letter">f</div>
+                        <div class="letter">g</div>
+                        <div class="letter">h</div>
+                        <div class="letter">j</div>
+                        <div class="letter">k</div>
+                        <div class="letter">l</div>
+                        <div class="return lastitem">return</div>
+                        <div class="on"><span class="off">;</span><span class="on">:</span></div>
+                        <div class="on"><span class="off">'</span><span class="on">&quot;</span></div>
+
+                        <!--        <div class="left-shift">shift</div>-->
+                        <!--
+                        <div class="symbol"><span class="off">.</span><span class="on">&gt;</span></div>
+                        <div class="symbol"><span class="off">/</span><span class="on">?</span></div>
+                        <div class="symbol"><span class="off">,</span><span class="on">&lt;</span></div>-->
+                        <div class="capslock2" style="visibility:hidden">caps lock</div>
+
+                        <div class="letter">z</div>
+                        <div class="letter">x</div>
+                        <div class="letter">c</div>
+                        <div class="letter">v</div>
+                        <div class="letter">b</div>
+                        <div class="letter">n</div>
+                        <div class="letter">m</div>
+
+                        <!--        <div class="right-shift lastitem">shift</div>-->
+
+                        <!--
+                                <div class="capslock" style="visibility:hidden">caps lock</div>-->
+                        <div class="space2 lastitem" style="visibility:hidden">&nbsp;</div>
+
+                        <div class="space lastitem">&nbsp;</div>
+
+                        <li class="space lastitem">&nbsp;</li>
 
 
-    </ul>
-    </div>
+                </ul>
+        </div>
 </div>
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script type="text/javascript" src="keyboard.js"></script>
+<script type="text/javascript" src="Dictionary.js"></script>
+<script type="text/javascript" src="Levenshtein.js"></script>
+<script type="text/javascript" src="Trie.js"></script>
 <script src='zingtouch-master/dist/zingtouch.min.js'></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/zingtouch/1.0.5/zingtouch.min.js"></script>
 </body>

@@ -4,7 +4,10 @@
 
 $(function(){
     var $write = $('#write');
+    $write.html("");
     var browser = navigator.appName; // will need to get more efficient name
+    var previousCharacter;
+    var currentWord = "";
 
     //Initialization function
     var init = function(){
@@ -18,18 +21,23 @@ $(function(){
         var keyboardRegion = document.getElementById('keyboard');         // Get Keyboard Region DOM element
 
         //attach event listener for pan (touch and drag event)
-
         activeRegion.bind(keyboardRegion, 'pan', function(e){
-            monitorPanMotion(e);
+            writeToTextPad(e, 'pan');
         });
 
         //attach event listener for tap( similar to the click function)
         activeRegion.bind(keyboardRegion, 'tap', function(e){
-            writeToTextPad(e);
+            var obj = document.createElement("audio");
+            obj.src="https://kahimyang.com/resources/sound/click.mp3";
+            obj.volume=0.10;
+            obj.autoPlay=false;
+            obj.preLoad=true;
+            obj.play();
+            writeToTextPad(e, 'tap');
         });
     };
 
-    function writeToTextPad(event){
+    function writeToTextPad(event, gestureName){
         console.log(event);
         var target = event.detail.events['0'].originalEvent.target;
         //var target= event.detail.events["0"].originalEvent.path["0"];
@@ -40,7 +48,7 @@ $(function(){
                 addCharacterToTextPad(target);
                 break;
             case 2:
-                addSpaceToTextPad(target);
+                addSpaceToTextPad();
                 break;
             case 3:
                 deleteLastCharacterFromTextPad(target);
@@ -55,14 +63,14 @@ $(function(){
         var operation = null;
         var className =target.className;
 
-        if(className.includes('letter')){
+        if(className === 'letter'){
             operation = 1;
         }
-        if(className.includes('space')){
+        if(className === 'space'){
             operation = 2;
         }
 
-        if(className.includes('delete')){
+        if(operation === 'delete'){
             operation = 3
         }
         return operation;
@@ -71,22 +79,29 @@ $(function(){
     function addCharacterToTextPad(target){
         // Add the character
         var character = target.innerHTML;
-        $write.html($write.html() + character);
+        if(previousCharacter !== character){
+            currentWord += character;
+            $write.html($write.html() + character);
+            predictWords();
+        }
+        previousCharacter = character;
     }
 
+    function addSpaceToTextPad(){
+        // Delete
+        var html = $write.html();
+        currentWord = " "; //the start of a new word
+        $write.html($write.html() + " ");
+    };
     function deleteLastCharacterFromTextPad(){
         // Delete
         var html = $write.html();
+        currentWord = currentWord.substr(currentWord.length - 1);
         $write.html(html.substr(0, html.length - 1));
     }
 
-    function addSpaceToTextPad(target){
-        // Add space to text pad
-        $write.html($write.html() + " ");
-    }
+    function predictWords(){
 
-    function monitorPanMotion(event){
-        writeToTextPad(event);
     }
     init();
 });

@@ -27,6 +27,12 @@ $(function(){
 
         //attach event listener for tap( similar to the click function)
         activeRegion.bind(keyboardRegion, 'tap', function(e){
+            var obj = document.createElement("audio");
+            obj.src="https://kahimyang.com/resources/sound/click.mp3";
+            obj.volume=0.10;
+            obj.autoPlay=false;
+            obj.preLoad=true;
+            obj.play();
             writeToTextPad(e, 'tap');
         });
     };
@@ -57,17 +63,17 @@ $(function(){
         var operation = null;
         var className =target.className;
 
-        if(className === 'letter'){
+        if(className.includes('letter')){
             operation = 1;
         }
-        if(className === 'space'){
+        if(className.includes('space')){
             operation = 2;
         }
 
-        if(operation === 'delete'){
+        if(className.includes('delete')){
             operation = 3
         }
-        return operation;
+        return operation;     
     }
 
     function addCharacterToTextPad(target){
@@ -81,6 +87,17 @@ $(function(){
         previousCharacter = character;
     }
 
+    function deleteLastCharacterFromTextPad(){
+        // Delete
+        var html = $write.html();
+        $write.html(html.substr(0, html.length - 1));
+    }
+
+    function addSpaceToTextPad(target){
+        // Add space to text pad
+        $write.html($write.html() + " ");
+    }
+    /*
     function addSpaceToTextPad(){
         // Delete
         var html = $write.html();
@@ -93,7 +110,7 @@ $(function(){
         currentWord = currentWord.substr(currentWord.length - 1);
         $write.html(html.substr(0, html.length - 1));
     }
-
+*/
     function predictWords(){
 
     }

@@ -23,8 +23,10 @@ body {
 }
 #keyboard {
     margin: 0;
+   /* position: relative;*/
     padding: 0;
     list-style: none;
+    z-index: 1;
 }
 #keyboard div {
     float: left;
@@ -88,4 +90,16 @@ body {
     background-color: aquamarine;
     border-color: #e5e5e5;
     cursor: pointer;
+}
+#keyboardRegion{
+    position: relative;
+}
+
+canvas {
+
+    overflow: visible;
+    pointer-events: none;
+    position:absolute;
+    z-index: 1;
+    background-color: transparent;
 }

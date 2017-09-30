@@ -8,22 +8,57 @@ $(function(){
     var browser = navigator.appName; // will need to get more efficient name
     var previousCharacter;
     var currentWord = "";
+    var autoSuggestion = new Dictionary();
+    var mouseDown = false;
+    var pathBeginX = 0;
+    var pathBeginY = 0;
+    var canvasDOM;
+    var ctx;
 
     //Initialization function
     var init = function(){
-        setupEventListeners();
+        canvasDOM = document.getElementById("swipeCanvas");
+        ctx = canvasDOM.getContext('2d');
+        fitToContainer(canvasDOM);
+        setupKeyBoardEventListeners();
     };
 
-    var setupEventListeners = function(){
+    function fitToContainer(canvas){
+        // Make it visually fill the positioned parent
+        canvas.style.width ='100%';
+        canvas.style.height='100%';
+        // ...then set the internal size to match
+        canvas.width  = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+/*    var setupSwipeBoardEventListeners = function(){
+        var keyboardRegion = document.getElementById('keyboard');
+        keyboardRegion.addEventListener()
+    };*/
+
+    var setupKeyBoardEventListeners = function(){
         //Setup the active region for the touch events
         var containerElement = document.getElementById('container');        // Get Container Region
         var activeRegion = new ZingTouch.Region(containerElement);
         var keyboardRegion = document.getElementById('keyboard');         // Get Keyboard Region DOM element
 
-        //attach event listener for pan (touch and drag event)
-        activeRegion.bind(keyboardRegion, 'pan', function(e){
-            writeToTextPad(e, 'pan');
+        keyboardRegion.addEventListener("mousedown", function(e){
+            mouseDown = true;
+            startUserPath(event);
         });
+
+        keyboardRegion.addEventListener("mousemove", function(e){
+            if(mouseDown){
+                writeToTextPad(e);
+                traceUserPath(e);
+            }
+        });
+
+        keyboardRegion.addEventListener("mouseup", function(e){
+            mouseDown = false;
+            clearCanvas();
+        })
+
 
         //attach event listener for tap( similar to the click function)
         activeRegion.bind(keyboardRegion, 'tap', function(e){
@@ -33,13 +68,63 @@ $(function(){
             obj.autoPlay=false;
             obj.preLoad=true;
             obj.play();
-            writeToTextPad(e, 'tap');
+            //writeToTextPad(e,'tap');
         });
     };
 
-    function writeToTextPad(event, gestureName){
+
+    function clearCanvas(){
+        canvasDOM = document.getElementById("swipeCanvas");
+        ctx = canvasDOM.getContext("2d");
+        ctx.clearRect(0,0, canvasDOM.width, canvasDOM.height);
+    };
+
+
+    function getXCoordinate(event){
+        var xCoor = event.clientX;
+        return xCoor;
+    }
+
+    function getYCoordinate(event){
+        var yCoor = event.clientY;
+        return yCoor;
+    }
+
+    function startUserPath(event){
+        var keyboardRegion = document.getElementById('keyboard');
+        canvasDOM = document.getElementById("swipeCanvas");
+        ctx = canvasDOM.getContext('2d');
+/*        var xCoor = event.pageX - keyboardRegion.offsetWidth  ;
+        var yCoor = event.pageY - keyboardRegion.offsetHeight;*/
+        var xCoor = event.layerX;
+        var yCoor = event.layerY;
+
+        ctx.strokeStyle = 'blue';
+        ctx.lineWidth = 2;
+        ctx.lineCap = 'round';
+
+        ctx.beginPath();
+        ctx.moveTo(xCoor, yCoor);
+
+    }
+
+    function traceUserPath(event){
         console.log(event);
-        var target = event.detail.events['0'].originalEvent.target;
+        var keyboardRegion = document.getElementById('keyboard');
+        canvasDOM = document.getElementById("swipeCanvas");
+        ctx = canvasDOM.getContext('2d');
+/*        var xCoor = event.pageX - keyboardRegion.offsetWidth ;
+        var yCoor = event.pageY - keyboardRegion.offsetHeight ;*/
+        var xCoor = event.layerX;
+        var yCoor = event.layerY;
+        console.log(keyboardRegion.offsetWidth);
+
+        ctx.lineTo(xCoor, yCoor);
+        ctx.stroke();
+    }
+
+    function writeToTextPad(event){
+        var target = event.target;
         //var target= event.detail.events["0"].originalEvent.path["0"];
         var operationType = getOperationType(target);
 
@@ -73,7 +158,7 @@ $(function(){
         if(className.includes('delete')){
             operation = 3
         }
-        return operation;     
+        return operation;
     }
 
     function addCharacterToTextPad(target){
@@ -97,7 +182,6 @@ $(function(){
         // Add space to text pad
         $write.html($write.html() + " ");
     }
-    /*
     function addSpaceToTextPad(){
         // Delete
         var html = $write.html();
@@ -110,9 +194,19 @@ $(function(){
         currentWord = currentWord.substr(currentWord.length - 1);
         $write.html(html.substr(0, html.length - 1));
     }
-*/
     function predictWords(){
 
+    }
+
+    function Position(el) {
+        var position = {left: 0, top: 0};
+        if (el) {
+            if (!isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
+                position.left += el.offsetLeft;
+                position.top += el.offsetTop;
+            }
+        }
+        return position;
     }
     init();
 });

@@ -518,4 +518,6 @@ $( function() {
         }
 
     };
+
+    return Trie;
 });

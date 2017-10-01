@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+</head>
+<input type="text" id="input"/><br>
+<textarea type="text" id="write"></textarea>
+<br>
+
+<script>
+    var suggestions;
+    var flagSuccess= false;
+    var word= 'wertyuioiuytrtghjklkjhgfd';
+
+    $.ajax({
+        url: 'http://127.0.0.1:5000/get_suggestion',
+        data: {'data':word},
+        type: 'POST',
+
+        success: function(response) {
+            console.log("result:");
+            console.log(response);
+            suggestions = response['suggestions'];
+            console.log(suggestions);
+
+            for (var i = 0; i < suggestions.length; i++) {
+
+                var b = document.createElement('button');
+                b.innerHTML = suggestions[i];
+                //div.style.border= '1px solid black';
+                b.style.textAlign = 'center';
+                b.style.background = '#fff';
+                b.style.float = 'left';
+                b.style.padding = '5px';
+                b.className = 'suggestionButtons';
+                b.id=suggestions[i];
+                b.addEventListener('click',writeWordToPad,false)
+
+                document.body.appendChild(b);
+
+                flagSuccess = true;
+            }
+        },
+
+
+
+
+
+    })
+
+
+    //var c=document.getElementsByClassName('suggestionButtons');
+
+
+    //  c.addEventListener('click', writeWordToPad, false);
+
+
+    function writeWordToPad(event)
+    {
+
+        console.log(event.target.id);
+
+        $('#write').html($('#write').html() + event.target.id);
+
+
+
+    }
+
+
+
+</script>
+</body>
+</html>

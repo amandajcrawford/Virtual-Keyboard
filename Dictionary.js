@@ -2,6 +2,8 @@ $(function(){
     var file = "words.txt";
     var wordList;
     var wordTrie = new Trie();
+    var levenshteinDist = window.Levenshtein;
+    var goalString = "A QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
 
     function readFile(){
         var deferred = $.Deferred();
@@ -35,17 +37,23 @@ $(function(){
             wordTrie.insert(wordArray[i]);
         }
 
-        console.log(wordTrie.getAllWords("AREA"));
     }
 
     Dictionary = function(){
         this.trie = wordTrie;
-
      };
 
     Dictionary.prototype = {
         getPossibleWords: function(str){
+            //find the nearest l-distance word
+            var goalStrArr = goalString.split('\n');
+            var minDist;
+            var minDistWord;
 
+/*            for(var i = 0; i < goalStrArr; i++){
+
+            }*/
+            wordTrie.autoComplete(str.toUpperCase());
         }
     };
 

@@ -23,12 +23,12 @@ body {
 }
 #keyboard {
     margin: 0;
-   /* position: relative;*/
+    position: relative;
     padding: 0;
-    list-style: none;
+/*    list-style: none;*/
     z-index: 1;
 }
-#keyboard div {
+#keyboard button {
     float: left;
     margin: 0 5px 5px 0;
     width: 40px;
@@ -40,25 +40,11 @@ body {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
 }
-.capslock, .tab, .left-shift, .capslock2 {
+.firstRow, .secondRow, .thirdRow, .space{
     clear: left;
 }
-#keyboard .tab, #keyboard .delete {
-    width: 70px;
-}
-#keyboard .capslock {
-    width: 80px;
-}
-#keyboard .capslock2 {
-    width: 90px;
-}
-#keyboard .return {
-    width: 77px;
-}
-#keyboard .extra {
-    clear: left;
-    width: 130px;
-}
+
+
 #keyboard .left-shift {
     width: 95px;
 }
@@ -68,22 +54,18 @@ body {
 .lastitem {
     margin-right: 0;
 }
-.uppercase {
+.letter {
     text-transform: uppercase;
 }
-#keyboard .space2 {
-    clear: left;
-    width: 185px;
-}
-#keyboard .space {
 
-    width: 225px;
+#keyboard .space {
+    width: 500px;
 }
 
 .on {
     display: none;
 }
-#keyboard div:hover {
+#keyboard button:hover {
     position: relative;
     top: 1px;
     left: 1px;
@@ -96,10 +78,9 @@ body {
 }
 
 canvas {
-
     overflow: visible;
     pointer-events: none;
     position:absolute;
-    z-index: 1;
+    z-index: 5;
     background-color: transparent;
 }

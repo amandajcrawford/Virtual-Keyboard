@@ -19,22 +19,21 @@ $(function(){
     var init = function(){
         canvasDOM = document.getElementById("swipeCanvas");
         ctx = canvasDOM.getContext('2d');
-        fitToContainer(canvasDOM);
+        //fitToContainer(canvasDOM);
         setupKeyBoardEventListeners();
     };
 
     function fitToContainer(canvas){
+        var keyboard = document.getElementById('keyboard');
         // Make it visually fill the positioned parent
         canvas.style.width ='100%';
         canvas.style.height='100%';
+
         // ...then set the internal size to match
         canvas.width  = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
+        canvas.height = keyboard.scrollHeight;
+        console.dir(canvas.height );
     }
-/*    var setupSwipeBoardEventListeners = function(){
-        var keyboardRegion = document.getElementById('keyboard');
-        keyboardRegion.addEventListener()
-    };*/
 
     var setupKeyBoardEventListeners = function(){
         //Setup the active region for the touch events
@@ -43,11 +42,13 @@ $(function(){
         var keyboardRegion = document.getElementById('keyboard');         // Get Keyboard Region DOM element
 
         keyboardRegion.addEventListener("mousedown", function(e){
+            e.preventDefault();
             mouseDown = true;
             startUserPath(event);
         });
 
         keyboardRegion.addEventListener("mousemove", function(e){
+            e.preventDefault();
             if(mouseDown){
                 writeToTextPad(e);
                 traceUserPath(e);
@@ -55,6 +56,7 @@ $(function(){
         });
 
         keyboardRegion.addEventListener("mouseup", function(e){
+            e.preventDefault();
             mouseDown = false;
             clearCanvas();
         })
@@ -62,6 +64,7 @@ $(function(){
 
         //attach event listener for tap( similar to the click function)
         activeRegion.bind(keyboardRegion, 'tap', function(e){
+            e.preventDefault();
             var obj = document.createElement("audio");
             obj.src="https://kahimyang.com/resources/sound/click.mp3";
             obj.volume=0.10;
@@ -94,11 +97,18 @@ $(function(){
         var keyboardRegion = document.getElementById('keyboard');
         canvasDOM = document.getElementById("swipeCanvas");
         ctx = canvasDOM.getContext('2d');
-/*        var xCoor = event.pageX - keyboardRegion.offsetWidth  ;
-        var yCoor = event.pageY - keyboardRegion.offsetHeight;*/
-        var xCoor = event.layerX;
-        var yCoor = event.layerY;
-
+        var xCoor;
+        var yCoor;
+        console.log(event);
+        if(event.target.id === "keyboard"){
+            /*xCoor = event.offsetX;
+            yCoor = event.offsetY;*/
+            xCoor = event.screenX - event.layerX;
+            yCoor = event.screenY - event.layerY;
+        }else{
+            xCoor = event.pageX - event.layerX;
+            yCoor = -event.layerY;
+        }
         ctx.strokeStyle = 'blue';
         ctx.lineWidth = 2;
         ctx.lineCap = 'round';
@@ -109,15 +119,21 @@ $(function(){
     }
 
     function traceUserPath(event){
-        console.log(event);
+        //console.log(event);
         var keyboardRegion = document.getElementById('keyboard');
         canvasDOM = document.getElementById("swipeCanvas");
         ctx = canvasDOM.getContext('2d');
-/*        var xCoor = event.pageX - keyboardRegion.offsetWidth ;
-        var yCoor = event.pageY - keyboardRegion.offsetHeight ;*/
-        var xCoor = event.layerX;
-        var yCoor = event.layerY;
-        console.log(keyboardRegion.offsetWidth);
+        var xCoor;
+        var yCoor;
+        if(event.target.id === "keyboard"){
+          /* xCoor = event.offsetX;
+           yCoor = event.offsetY;*/
+            xCoor = event.screenX - event.layerX;
+            yCoor = event.screenY - event.layerY;
+        }else{
+            xCoor = event.pageX - event.layerX;
+            yCoor = -event.layerY;
+        }
 
         ctx.lineTo(xCoor, yCoor);
         ctx.stroke();

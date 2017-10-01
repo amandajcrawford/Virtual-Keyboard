@@ -3,7 +3,7 @@ $(function(){
     var wordList;
     var wordTrie = new Trie();
     var levenshteinDist = window.Levenshtein;
-    var goalString = "A QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
+
 
     function readFile(){
         var deferred = $.Deferred();
@@ -41,19 +41,38 @@ $(function(){
 
     Dictionary = function(){
         this.trie = wordTrie;
+        this.suggestions = [];
+
      };
 
     Dictionary.prototype = {
         getPossibleWords: function(str){
-            //find the nearest l-distance word
-            var goalStrArr = goalString.split('\n');
-            var minDist;
-            var minDistWord;
+            var deferred = $.Deferred();
+            //var word= 'wertyuioiuytrtghjklkjhgfd';
+            $.ajax({
+                url: 'http://127.0.0.1:5000/get_suggestion',
+                data: {'data': 'wertyuioiuytrtghjklkjhgfd'},
+                type: 'POST',
 
-/*            for(var i = 0; i < goalStrArr; i++){
+                success: function (response) {
+                    this.suggestions = response['suggestions'];
+                    console.log(str);
+                    console.log(wordTrie.autoComplete(str.toUpperCase()));
+                    for(var i=0; i < this.suggestions.length; i++){
+                        var autoComplete = wordTrie.autoComplete(this.suggestions[i]);
+                        console.log(autoComplete);
+                        for(var j = 0; j < autoComplete.length; j++){
+                            this.suggestions.append(autoComplete[j]);
+                        }
+                    }
+                    console.log(this.suggestions);
 
-            }*/
-            wordTrie.autoComplete(str.toUpperCase());
+                    deferred.resolve(this.suggestions);
+
+                }
+            });
+
+            return deferred.promise();
         }
     };
 

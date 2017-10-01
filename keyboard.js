@@ -7,19 +7,26 @@ $(function(){
     $write.html("");
     var browser = navigator.appName; // will need to get more efficient name
     var previousCharacter;
+    var startTime;
+    var duration = 0;
+    var threshold = 500;
+    var doubleSet = false;
     var currentWord = "";
     var autoSuggestion = new Dictionary();
     var mouseDown = false;
+    var clickEvent = false;
     var pathBeginX = 0;
     var pathBeginY = 0;
     var canvasDOM;
     var ctx;
+    var goalString = "A QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
 
     //Initialization function
     var init = function(){
         canvasDOM = document.getElementById("swipeCanvas");
+        document.getElementById('textToComplete').innerHTML = goalString ;
         ctx = canvasDOM.getContext('2d');
-        //fitToContainer(canvasDOM);
+        fitToContainer(canvasDOM);
         setupKeyBoardEventListeners();
     };
 
@@ -31,8 +38,7 @@ $(function(){
 
         // ...then set the internal size to match
         canvas.width  = canvas.offsetWidth;
-        canvas.height = keyboard.scrollHeight;
-        console.dir(canvas.height );
+        canvas.height = canvas.offsetHeight;
     }
 
     var setupKeyBoardEventListeners = function(){
@@ -44,35 +50,42 @@ $(function(){
         keyboardRegion.addEventListener("mousedown", function(e){
             e.preventDefault();
             mouseDown = true;
-            startUserPath(event);
+
+            //startUserPath(event);
         });
 
         keyboardRegion.addEventListener("mousemove", function(e){
             e.preventDefault();
+
             if(mouseDown){
+                //addSpaceToTextPad();
+                clickEvent = false;
                 writeToTextPad(e);
-                traceUserPath(e);
+                //traceUserPath(e);
             }
         });
 
         keyboardRegion.addEventListener("mouseup", function(e){
             e.preventDefault();
             mouseDown = false;
-            clearCanvas();
-        })
+            loadPredictions();
 
+            //clearCanvas();
+        });
 
-        //attach event listener for tap( similar to the click function)
-        activeRegion.bind(keyboardRegion, 'tap', function(e){
-            e.preventDefault();
+        keyboardRegion.addEventListener('click', function(e){
+
             var obj = document.createElement("audio");
             obj.src="https://kahimyang.com/resources/sound/click.mp3";
             obj.volume=0.10;
             obj.autoPlay=false;
             obj.preLoad=true;
             obj.play();
-            //writeToTextPad(e,'tap');
+            writeToTextPad(e);
+            loadPredictions();
+
         });
+
     };
 
 
@@ -99,15 +112,15 @@ $(function(){
         ctx = canvasDOM.getContext('2d');
         var xCoor;
         var yCoor;
-        console.log(event);
+
         if(event.target.id === "keyboard"){
-            /*xCoor = event.offsetX;
-            yCoor = event.offsetY;*/
-            xCoor = event.screenX - event.layerX;
-            yCoor = event.screenY - event.layerY;
+            xCoor =  event.clientX + Math.abs(event.layerX);
+            yCoor = event.screenY - event.clientY +  -(event.layerY);
+/*            xCoor = event.screenX - event.layerX;
+            yCoor = event.screenY - event.layerY;*/
         }else{
-            xCoor = event.pageX - event.layerX;
-            yCoor = -event.layerY;
+            xCoor =  event.clientX + Math.abs(event.layerX);
+            yCoor = event.screenY - event.clientY + -(event.layerY);
         }
         ctx.strokeStyle = 'blue';
         ctx.lineWidth = 2;
@@ -119,20 +132,22 @@ $(function(){
     }
 
     function traceUserPath(event){
-        //console.log(event);
         var keyboardRegion = document.getElementById('keyboard');
         canvasDOM = document.getElementById("swipeCanvas");
         ctx = canvasDOM.getContext('2d');
         var xCoor;
         var yCoor;
+
         if(event.target.id === "keyboard"){
-          /* xCoor = event.offsetX;
-           yCoor = event.offsetY;*/
-            xCoor = event.screenX - event.layerX;
-            yCoor = event.screenY - event.layerY;
+            xCoor =  event.clientX + Math.abs(event.layerX);
+            yCoor = event.screenY - event.clientY +  -(event.layerY) +event.offsetY;
+/*            xCoor = event.screenX - event.layerX;
+            yCoor = event.screenY - event.layerY;*/
         }else{
-            xCoor = event.pageX - event.layerX;
-            yCoor = -event.layerY;
+            xCoor = event.clientX + event.layerX;
+            yCoor = event.screenY - event.clientY + -(event.layerY);
+     /*       xCoor = event.offsetX;
+            yCoor = event.offsetY;*/
         }
 
         ctx.lineTo(xCoor, yCoor);
@@ -141,18 +156,17 @@ $(function(){
 
     function writeToTextPad(event){
         var target = event.target;
-        //var target= event.detail.events["0"].originalEvent.path["0"];
         var operationType = getOperationType(target);
 
         switch(operationType){
             case 1:
-                addCharacterToTextPad(target);
+                addCharacterToTextPad(event);
                 break;
             case 2:
                 addSpaceToTextPad();
                 break;
             case 3:
-                deleteLastCharacterFromTextPad(target);
+                deleteLastCharacterFromTextPad();
                 break;
             default:
                 break;
@@ -166,52 +180,84 @@ $(function(){
 
         if(className.includes('letter')){
             operation = 1;
-        }
-        if(className.includes('space')){
+        }else if(className.includes('space')){
             operation = 2;
-        }
-
-        if(className.includes('delete')){
+        }else if(className.includes('delete')){
             operation = 3
         }
         return operation;
     }
 
-    function addCharacterToTextPad(target){
+    function addCharacterToTextPad(event){
         // Add the character
-        var character = target.innerHTML;
+        var character = event.target.innerHTML.trim();
         if(previousCharacter !== character){
             currentWord += character;
+            startTime = event.timeStamp;
+            doubleSet = false;
             $write.html($write.html() + character);
-            predictWords();
+        }else{
+            var diff = event.timeStamp - startTime;
+            if(diff >= threshold && !doubleSet){
+                doubleSet = true;
+                currentWord += character;
+                $write.html($write.html() + previousCharacter);
+            }
+
         }
         previousCharacter = character;
     }
 
-    function deleteLastCharacterFromTextPad(){
-        // Delete
-        var html = $write.html();
-        $write.html(html.substr(0, html.length - 1));
-    }
-
-    function addSpaceToTextPad(target){
-        // Add space to text pad
-        $write.html($write.html() + " ");
-    }
     function addSpaceToTextPad(){
-        // Delete
+        // Space
         var html = $write.html();
         currentWord = " "; //the start of a new word
         $write.html($write.html() + " ");
-    };
+    }
+
     function deleteLastCharacterFromTextPad(){
         // Delete
         var html = $write.html();
         currentWord = currentWord.substr(currentWord.length - 1);
         $write.html(html.substr(0, html.length - 1));
     }
-    function predictWords(){
 
+    function loadPredictions(){
+        var suggestionRow = document.getElementById("autoSuggestion");
+        autoSuggestion.getPossibleWords(currentWord).then(function(data){
+
+            //var closestsWords = getClosetsWords();
+            for (var i = 0; i < data.length; i++) {
+
+                var b = document.createElement('button');
+                b.innerHTML = data[i];
+                //div.style.border= '1px solid black';
+                b.style.textAlign = 'center';
+                b.style.background = '#fff';
+                b.style.float = 'left';
+                b.style.padding = '5px';
+                b.className = 'suggestionButtons';
+                b.id=data[i];
+                b.addEventListener('click',writeWordToPad,false)
+
+                suggestionRow.appendChild(b);
+                }
+
+        });
+    }
+
+    function writeWordToPad(event){
+        while (suggestionRow.firstChild) {
+            suggestionRow.removeChild(myNode.suggestionRow);
+        }
+
+        var suggestionRow = document.getElementById("autoSuggestion");
+        $('#write').html($('#write').html() + event.target.id);
+
+        while (suggestionRow.firstChild) {
+            suggestionRow.removeChild(myNode.suggestionRow);
+        }
+        currentWord = "";
     }
 
     function Position(el) {

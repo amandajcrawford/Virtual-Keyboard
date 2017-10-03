@@ -1,5 +1,4 @@
-(function() {
-    'use strict';
+$(function() {
     //https://github.com/hiddentao/fast-levenshtein/blob/master/levenshtein.js
 
     var collator;
@@ -15,7 +14,11 @@
     /**
      * Based on the algorithm at http://en.wikipedia.org/wiki/Levenshtein_distance.
      */
-    var Levenshtein = {
+    Levenshtein = function(){
+
+    };
+
+    Levenshtein.prototype = {
         /**
          * Calculate levenshtein distance of the two strings.
          *
@@ -133,4 +136,5 @@
     else if (typeof window !== "undefined" && window !== null) {
         window.Levenshtein = Levenshtein;
     }
+    return Levenshtein;
 });

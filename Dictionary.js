@@ -50,11 +50,13 @@ $(function(){
                     arr.push(word);
                     arr.push(distance);
                     arr.push(wordArray[i][1]);
-                    minDistanceArr.push(arr);                }
+                    minDistanceArr.push(arr);           
+
+                    }
                     minDistanceArr.sort(function (a, b) {
                         return a[1] - b[1];
                     });
-
+                    console.log(minDistanceArr);
 
                     var topSuggestions = [];
                     for(var j = 0; j < 100; j++){

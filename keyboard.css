@@ -4,10 +4,12 @@
 }
 body {
     font: 71%/1.5 Verdana, Sans-Serif;
-  /*  background: #eee;*/
-    background-image: url("background.jpg");
-    background-size: inherit;
-    background-repeat: no-repeat;
+   /* background: url("background.jpg") no-repeat center center fixed;*/
+     background: url("website-background-transparency.png") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 #container {

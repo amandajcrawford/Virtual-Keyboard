@@ -8,14 +8,20 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 </head>
 <body>
-<div class="h1 text-center">Mavis Beacon Renig</div>
-<div class="container badge" id="textToComplete"></div>
+<div class="h1 text-center display-1">JS Keyboard</div>
+<div class="container blockquote text-center" style="padding-top: 20px;" id="textToComplete"></div>
 <div id="container" class="container">
-        <textarea id="write" rows="6" cols="60"></textarea>
-        <div id="autoSuggestion"></div>
-        <div id="keyboardRegion">
+        <div class="row">
+                <textarea class="col-12" id="write" rows="6" cols="60"></textarea>
+        </div>
+        <div class="row container-fluid">
+                <div class="col-1"></div>
+                <div id="autoSuggestion" class="col-12 btn-group btn-group-sm" role="group" style"margin-bottom: 10px;"></div>
+                <div class="col-1"></div>
+        </div>
+        <div class="row" id="keyboardRegion">
                 <canvas id="swipeCanvas" width="500" height="300" ></canvas>
-                <div id="keyboard">
+                <div id="keyboard" class="col-12">
                         <div class="letter firstRow" style="margin-left: 75px;">q</div>
                         <div class="letter">w</div>
                         <div class="letter">e</div>
@@ -35,8 +41,7 @@
                         <div class="letter">h</div>
                         <div class="letter">j</div>
                         <div class="letter">k</div>
-                        <div class="letter">l</div>
-                        <div class="return lastitem">return</div>
+                        <div class="letter lastitem">l</div>
                         <div class="letter thirdRow" style="margin-left: 125px;">z</div>
                         <div class="letter">x</div>
                         <div class="letter">c</div>

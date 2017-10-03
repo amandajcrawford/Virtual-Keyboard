@@ -14,21 +14,61 @@ $(function(){
     var currentWord = "";
     var autoSuggestion = new Dictionary();
     var mouseDown = false;
+    var mouseMove = false;
     var clickEvent = false;
     var pathBeginX = 0;
     var pathBeginY = 0;
     var canvasDOM;
     var ctx;
     var goalString = "A QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
+    var suggestionAdded = false;
+    var eventPause = 0;
+
 
     //Initialization function
     var init = function(){
         canvasDOM = document.getElementById("swipeCanvas");
-        document.getElementById('textToComplete').innerHTML = goalString ;
+        document.getElementById('textToComplete').innerHTML = goalString;
         ctx = canvasDOM.getContext('2d');
         fitToContainer(canvasDOM);
         setupKeyBoardEventListeners();
     };
+
+     function writeWordToPad(event){
+        console.log(event);
+        suggestionAdded = true;
+        var suggestionRow = document.getElementById("autoSuggestion");
+        document.getElementById("autoSuggestion").innerHTML = "";
+        var currentText = $('#write').html();
+        var textWords = currentText.split(" ").splice(-1);
+        console.log(textWords);
+        textWords.append( event.target.id);
+        textWords.join(" ");
+        console.log(textWords);
+        $('#write').html( textWords);
+        currentWord = "";
+
+    }
+    
+    function writeToTextPad(event){        
+        var target = event.target;
+        var operationType = getOperationType(target);
+
+        switch(operationType){
+            case 1:
+                addCharacterToTextPad(event);
+                break;
+            case 2:
+                addSpaceToTextPad();
+                break;
+            case 3:
+                deleteLastCharacterFromTextPad();
+                break;
+            default:
+                break;
+        }
+
+    }
 
     function fitToContainer(canvas){
         var keyboard = document.getElementById('keyboard');
@@ -42,50 +82,62 @@ $(function(){
     }
 
     var setupKeyBoardEventListeners = function(){
-        //Setup the active region for the touch events
-        var containerElement = document.getElementById('container');        // Get Container Region
-        var activeRegion = new ZingTouch.Region(containerElement);
-        var keyboardRegion = document.getElementById('keyboard');         // Get Keyboard Region DOM element
+        // Get Keyboard Region DOM element
+        var keyboardRegion = document.getElementById('keyboard');
+        //add event listeners
+        $('#autoSuggestion').off().on('click', '.suggestionButtons', function(event){
+            suggestionAdded = true;
+            document.getElementById("autoSuggestion").innerHTML = "";
+            var currentText = $('#write').html();
+            var textWords = currentText.split(" ").slice(0, -1);
+            console.log(textWords);
+            if(textWords.length === 0){
+                textWords = event.target.id;
+            }else{
+                textWords.push( event.target.id);
+                textWords =textWords.join(" ");
+            }
+            $('#write').html("");
+            $('#write').html( textWords + " ");
+            currentWord = "";
 
-        keyboardRegion.addEventListener("mousedown", function(e){
-            e.preventDefault();
-            mouseDown = true;
-            //startUserPath(event);
         });
 
-        keyboardRegion.addEventListener("mousemove", function(e){
-            e.preventDefault();
+        $(keyboardRegion).on('mousemove mousedown mouseup', function(e){
+            switch(e.type){
+                case 'mousedown':
+                    e.preventDefault();
+                    var obj = document.createElement("audio");
+                    obj.src="https://kahimyang.com/resources/sound/click.mp3";
+                    obj.volume=0.10;
+                    obj.autoPlay=false;
+                    obj.preLoad=true;
+                    obj.play();
+                    writeToTextPad(e);
+                    if(!mouseMove){
+                        loadPredictions();
+                    }
+                    mouseDown = true;
+                    break;
+                case 'mousemove':
+                    e.preventDefault();
 
-            if(mouseDown){
-                //addSpaceToTextPad();
-                clickEvent = false;
-                writeToTextPad(e);
-                //traceUserPath(e);
+                    if(mouseDown){
+                        mouseMove = true;
+                        writeToTextPad(e);
+                    }
+                    break;
+                case 'mouseup':
+                    e.preventDefault();
+                    document.getElementById("autoSuggestion").innerHTML = "";
+                    if(mouseMove === true && mouseDown === true){
+                        loadPredictions();
+                        mouseMove = false;
+                    }
+                    mouseDown = false;
+                    break;
             }
         });
-
-        keyboardRegion.addEventListener("mouseup", function(e){
-            e.preventDefault();
-            mouseDown = false;
-            document.getElementById("autoSuggestion").innerHTML = "";
-            loadPredictions();
-
-            //clearCanvas();
-        });
-
-        keyboardRegion.addEventListener('click', function(e){
-
-            var obj = document.createElement("audio");
-            obj.src="https://kahimyang.com/resources/sound/click.mp3";
-            obj.volume=0.10;
-            obj.autoPlay=false;
-            obj.preLoad=true;
-            obj.play();
-            writeToTextPad(e);
-            loadPredictions();
-
-        });
-
     };
 
 
@@ -107,7 +159,6 @@ $(function(){
     }
 
     function startUserPath(event){
-        var keyboardRegion = document.getElementById('keyboard');
         canvasDOM = document.getElementById("swipeCanvas");
         ctx = canvasDOM.getContext('2d');
         var xCoor;
@@ -154,25 +205,6 @@ $(function(){
         ctx.stroke();
     }
 
-    function writeToTextPad(event){
-        var target = event.target;
-        var operationType = getOperationType(target);
-
-        switch(operationType){
-            case 1:
-                addCharacterToTextPad(event);
-                break;
-            case 2:
-                addSpaceToTextPad();
-                break;
-            case 3:
-                deleteLastCharacterFromTextPad();
-                break;
-            default:
-                break;
-        }
-
-    }
 
     function getOperationType(target){
         var operation = null;
@@ -222,43 +254,27 @@ $(function(){
         $write.html(html.substr(0, html.length - 1));
     }
 
+
+
     function loadPredictions(){
         var suggestionRow = document.getElementById("autoSuggestion");
+         
+            autoSuggestion.getPossibleWords(currentWord).then(function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    (function () {
+                        var b = document.createElement('button');
+                        b.innerHTML = data[i];
+                        b.className = 'suggestionButtons btn btn-sm btn-secondary';
+                        b.type = "button";
+                        b.id = data[i];
+                        suggestionRow.appendChild(b);
+                    }());
+                }
 
-        autoSuggestion.getPossibleWords(currentWord).then(function(data){
-            for (var i = 0; i < data.length; i++) {
-                (function(){
-                    var b = document.createElement('button');
-                    b.innerHTML = data[i];
-                    //div.style.border= '1px solid black';
-                    b.style.textAlign = 'center';
-                    b.style.background = '#fff';
-                    b.style.float = 'left';
-                    b.style.padding = '5px';
-                    b.className = 'suggestionButtons';
-                    b.id=data[i];
-                    suggestionRow.appendChild(b);
-                   // b.addEventListener('click',writeWordToPad,false);
-                }());
-            }
-            //add event listners
+                eventPause--;
 
-            $('.suggestionButtons').click( writeToTextPad);
-
-        });
-    }
-
-    function writeWordToPad(event){
-        var suggestionRow = document.getElementById("autoSuggestion");
-        var currentText = $('#write').html();
-        var textWords = currentText.split(" ").splice(-1);
-        console.log(textWords);
-        textWords.append( event.target.id);
-        textWords.join(" ");
-        console.log(textWords);
-        $('#write').html( textWords);
-        currentWord = "";
-        document.getElementById("autoSuggestion").innerHTML = "";
+            });
+        
     }
 
 

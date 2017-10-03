@@ -2,12 +2,14 @@ $(function(){
     var file = "words.txt";
     var readyToUse = false;
     var wordArray;
+    var wordFreqPairArray = [];
     var wordTrie = new Trie();
     var levenshteinDist = new Levenshtein();
-    var spellCheck = new SymSpell(4, SymSpell.Modes.TOP);
     var minDistanceArr = [];
     var minTester;
     var distance;
+    var FREQ_THRESHOLD = 10;
+    var WORD_LIMIT = 10;
 
     function readFile(){
         var deferred = $.Deferred();
@@ -26,23 +28,6 @@ $(function(){
         return deferred.promise();
     }
 
-/*    function createWordStructure(){
-        var wordList = $.Deferred();
-
-    }*/
-
-/*    function buildTrie(words){
-        var wordFreqPairArray = words.split("\n");
-        var wordArray = wordFreqPairArray.map(function(cur){
-            return cur.split(",")[0];
-        });
-
-        for(var i = 0; i < wordArray.length; i++){
-            wordTrie.insert(wordArray[i]);
-        }
-
-    }*/
-
     Dictionary = function(){
         this.trie = wordTrie;
         this.suggestions = [];
@@ -51,72 +36,46 @@ $(function(){
 
     Dictionary.prototype = {
         getPossibleWords: function(str){
+            minDistanceArr = [];
+            topSuggestions = [];
             var deferred = $.Deferred();
-            deferred.resolve(spellCheck.lookup(str));
-/*            //foreach word in the wordlist
-            for(var i = 0; i < wordArray.length; i++){
-                //find the l-dist between the word and the input
-                var word = wordArray[i][0];
-                distance = levenshteinDist.get(word, str);
+            //foreach word in the wordlist
+            if(str.length  > 3){
+                for(var i = 0; i < wordArray.length; i++){
+                    //find the l-dist between the word and the input
+                    var word = wordArray[i][0];
+                    distance = levenshteinDist.get(str, word, { useCollator: true});
 
-                var arr = [];
-                arr.push(word);
-                arr.push(distance);
-                arr.push(wordArray[1]);
-                minDistanceArr.push(arr);
-                /!*check whether the string should
-                * be in the list of min distances*!/
-           /!*     if(minDistanceArr.length < 5){
                     var arr = [];
                     arr.push(word);
                     arr.push(distance);
-                    arr.push(wordArray[1]);
-                    minDistanceArr.push(arr);
+                    arr.push(wordArray[i][1]);
+                    minDistanceArr.push(arr);                }
                     minDistanceArr.sort(function (a, b) {
-                        return a[1].value - b[1].value;
+                        return a[1] - b[1];
                     });
-                }else{
-                    for(var j = 0; j < 5; j++){
-                        if(minDistanceArr[j][1] > distance){
-                            if()
+
+
+                    var topSuggestions = [];
+                    for(var j = 0; j < 100; j++){
+                        if(minDistanceArr[j][2] >= FREQ_THRESHOLD){
+                            if(topSuggestions.length <= WORD_LIMIT){
+                                topSuggestions.push(minDistanceArr[j][0]);
+                            }else{
+                                break;
+                            }
+
                         }
                     }
-                }*!/
+
+                    deferred.resolve(topSuggestions);
 
 
+            }else{
+                deferred.resolve(true);
             }
-/!*
-            var deferred = $.Deferred();
 
-            $.ajax({
-                url: 'http://127.0.0.1:5000/get_suggestion',
-                data: {'data': 'wertyuioiuytrtghjklkjhgfd'},
-                type: 'POST',
 
-                success: function (response) {
-                    this.suggestions = response['suggestions'];
-                    console.log(str);
-                    console.log(wordTrie.autoComplete(str.toUpperCase()));
-                    for(var i=0; i < this.suggestions.length; i++){
-                        var autoComplete = wordTrie.autoComplete(this.suggestions[i]);
-                        console.log(autoComplete);
-                        for(var j = 0; j < autoComplete.length; j++){
-                            this.suggestions.append(autoComplete[j]);
-                        }
-                    }
-                    console.log(this.suggestions);
-
-                    deferred.resolve(this.suggestions);
-
-                }
-            });
-*!/
-            minDistanceArr.sort(function (a, b) {
-                return b[1] - a[1];
-            });
-
-            console.log(minDistanceArr);
-            deferred.resolve(minDistanceArr[0][0]);*/
             return deferred.promise();
         }
     };
@@ -125,17 +84,9 @@ $(function(){
         $.when(readFile()).done(function(words){
             readyToUse = true;
             wordFreqPairArray = words.split("\n");
-/*            wordArray = wordFreqPairArray.map(function(cur){
-                return cur.split(",");
-            });*/
             wordArray = wordFreqPairArray.map(function(cur){
-                return cur.split(",")[0];
+                return cur.split(",");
             });
-            console.log(wordArray);
-
-            for(var i = 0; i < wordArray.length; i++){
-                spellCheck.addWord(wordArray[i], 'en');
-            }
 
         });
     }

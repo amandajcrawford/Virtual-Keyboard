@@ -50,7 +50,6 @@ $(function(){
         keyboardRegion.addEventListener("mousedown", function(e){
             e.preventDefault();
             mouseDown = true;
-
             //startUserPath(event);
         });
 
@@ -68,6 +67,7 @@ $(function(){
         keyboardRegion.addEventListener("mouseup", function(e){
             e.preventDefault();
             mouseDown = false;
+            document.getElementById("autoSuggestion").innerHTML = "";
             loadPredictions();
 
             //clearCanvas();
@@ -224,51 +224,43 @@ $(function(){
 
     function loadPredictions(){
         var suggestionRow = document.getElementById("autoSuggestion");
+
         autoSuggestion.getPossibleWords(currentWord).then(function(data){
-
-            //var closestsWords = getClosetsWords();
             for (var i = 0; i < data.length; i++) {
+                (function(){
+                    var b = document.createElement('button');
+                    b.innerHTML = data[i];
+                    //div.style.border= '1px solid black';
+                    b.style.textAlign = 'center';
+                    b.style.background = '#fff';
+                    b.style.float = 'left';
+                    b.style.padding = '5px';
+                    b.className = 'suggestionButtons';
+                    b.id=data[i];
+                    suggestionRow.appendChild(b);
+                   // b.addEventListener('click',writeWordToPad,false);
+                }());
+            }
+            //add event listners
 
-                var b = document.createElement('button');
-                b.innerHTML = data[i];
-                //div.style.border= '1px solid black';
-                b.style.textAlign = 'center';
-                b.style.background = '#fff';
-                b.style.float = 'left';
-                b.style.padding = '5px';
-                b.className = 'suggestionButtons';
-                b.id=data[i];
-                b.addEventListener('click',writeWordToPad,false)
-
-                suggestionRow.appendChild(b);
-                }
+            $('.suggestionButtons').click( writeToTextPad);
 
         });
     }
 
     function writeWordToPad(event){
-        while (suggestionRow.firstChild) {
-            suggestionRow.removeChild(myNode.suggestionRow);
-        }
-
         var suggestionRow = document.getElementById("autoSuggestion");
-        $('#write').html($('#write').html() + event.target.id);
-
-        while (suggestionRow.firstChild) {
-            suggestionRow.removeChild(myNode.suggestionRow);
-        }
+        var currentText = $('#write').html();
+        var textWords = currentText.split(" ").splice(-1);
+        console.log(textWords);
+        textWords.append( event.target.id);
+        textWords.join(" ");
+        console.log(textWords);
+        $('#write').html( textWords);
         currentWord = "";
+        document.getElementById("autoSuggestion").innerHTML = "";
     }
 
-    function Position(el) {
-        var position = {left: 0, top: 0};
-        if (el) {
-            if (!isNaN(el.offsetLeft) && !isNaN(el.offsetTop)) {
-                position.left += el.offsetLeft;
-                position.top += el.offsetTop;
-            }
-        }
-        return position;
-    }
+
     init();
 });

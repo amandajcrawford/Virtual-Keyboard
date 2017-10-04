@@ -4,8 +4,14 @@
 }
 body {
     font: 71%/1.5 Verdana, Sans-Serif;
-    background: #eee;
+    background: url("background.jpg") no-repeat center center fixed;
+    /* background: url("website-background-transparency.png") no-repeat center center fixed;*/
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
+
 #container {
     margin: 100px auto;
     width: 688px;
@@ -23,8 +29,10 @@ body {
 }
 #keyboard {
     margin: 0;
+    position: relative;
     padding: 0;
-    list-style: none;
+/*    list-style: none;*/
+    z-index: 1;
 }
 #keyboard div {
     float: left;
@@ -38,44 +46,26 @@ body {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
 }
-.capslock, .tab, .left-shift, .capslock2 {
+.firstRow, .secondRow, .thirdRow, .space{
     clear: left;
 }
-#keyboard .tab, #keyboard .delete {
-    width: 70px;
-}
-#keyboard .capslock {
-    width: 80px;
-}
-#keyboard .capslock2 {
-    width: 90px;
-}
-#keyboard .return {
-    width: 77px;
-}
-#keyboard .extra {
-    clear: left;
-    width: 130px;
-}
-#keyboard .left-shift {
+
+
+#keyboard .delete {
     width: 95px;
 }
-#keyboard .right-shift {
+#keyboard .return {
     width: 109px;
 }
 .lastitem {
     margin-right: 0;
 }
-.uppercase {
+.letter {
     text-transform: uppercase;
 }
-#keyboard .space2 {
-    clear: left;
-    width: 185px;
-}
-#keyboard .space {
 
-    width: 225px;
+#keyboard .space {
+    width: 500px;
 }
 
 .on {
@@ -88,4 +78,24 @@ body {
     background-color: aquamarine;
     border-color: #e5e5e5;
     cursor: pointer;
+}
+#keyboardRegion{
+    position: relative;
+}
+
+canvas {
+    overflow: visible;
+    pointer-events: none;
+    position:absolute;
+    z-index: 5;
+    background-color: transparent;
+}
+
+#keyboard:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
 }

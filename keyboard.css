@@ -1,20 +1,39 @@
+@font-face {
+    font-family: Sarah;
+    src: url('SarahSans.eot');
+    src: url('SarahSans.eot?#iefix') format('embedded-opentype'),
+    url('SarahSans.woff') format('woff'),
+    url('SarahSans.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 * {
     margin: 0;
     padding: 0;
+
 }
 body {
-    font: 71%/1.5 Verdana, Sans-Serif;
-    background: url("background.jpg") no-repeat center center fixed;
-    /* background: url("website-background-transparency.png") no-repeat center center fixed;*/
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    font: 71%/1.5  'Sarah', sans-serif !important;
+    background-color:#673ab7!important;
+    height: 100%;
+    overflow: hidden;
+
+
+}
+#headContainer{
+    padding-top: 10px;
+    background-color: white;
 }
 
 #container {
     margin: 100px auto;
     width: 688px;
+    color:black !important;
+    font-weight: bolder;
+    font-size: 20px;
+
 }
 #write {
     margin: 0 0 5px;

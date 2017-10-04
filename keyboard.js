@@ -20,7 +20,9 @@ $(function(){
     var pathBeginY = 0;
     var canvasDOM;
     var ctx;
-    var goalString = "A QUICK";
+    var goalString = "ACTIONS SPEAK LOUDER THAN WORDS";
+    var goalStringArr = goalString.split(" ");
+    var goalWord = goalStringArr[0];
     var suggestionAdded = false;
     var eventPause = 0;
     var levenshteinDist = new Levenshtein();
@@ -29,28 +31,24 @@ $(function(){
 
     //Initialization function
     var init = function(){
-        canvasDOM = document.getElementById("swipeCanvas");
         document.getElementById('textToComplete').innerHTML = goalString;
-        ctx = canvasDOM.getContext('2d');
-        fitToContainer(canvasDOM);
         setupKeyBoardEventListeners();
     };
 
      function writeWordToPad(event){
-        console.log(event);
         suggestionAdded = true;
         var suggestionRow = document.getElementById("autoSuggestion");
         document.getElementById("autoSuggestion").innerHTML = "";
         var currentText = $('#write').html();
         var textWords = currentText.split(" ").splice(-1);
-        console.log(textWords);
         textWords.append( event.target.id);
         textWords.join(" ");
-        console.log(textWords);
         $('#write').html( textWords);
-        currentWord = "";
+        currentWord = event.target.id;
 
-    }
+        highlightMatchingChar();
+        currentWord = "";
+     }
     
     function writeToTextPad(event){        
         var target = event.target;
@@ -73,16 +71,6 @@ $(function(){
 
     }
 
-    function fitToContainer(canvas){
-        var keyboard = document.getElementById('keyboard');
-        // Make it visually fill the positioned parent
-        canvas.style.width ='100%';
-        canvas.style.height='100%';
-
-        // ...then set the internal size to match
-        canvas.width  = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-    }
 
     var setupKeyBoardEventListeners = function(){
         // Get Keyboard Region DOM element
@@ -93,7 +81,6 @@ $(function(){
             document.getElementById("autoSuggestion").innerHTML = "";
             var currentText = $('#write').html();
             var textWords = currentText.split(" ").slice(0, -1);
-            console.log(textWords);
             if(textWords.length === 0){
                 textWords = event.target.id;
             }else{
@@ -102,6 +89,8 @@ $(function(){
             }
             $('#write').html("");
             $('#write').html( textWords + " ");
+            currentWord = event.target.id;
+            highlightMatchingChar();
             currentWord = "";
 
         });
@@ -120,7 +109,7 @@ $(function(){
                     var levDis = levenshteinDist.get($write.html(),goalString);
                     var bigger = Math.max($write.html().length, goalString.length);
                     var pct = Math.round(((bigger - levDis) / bigger)*100);
-                    console.log($write.html() + ":"+ goalString + "=" +pct);
+/*                    console.log($write.html() + ":"+ goalString + "=" +pct);*/
                     if(pct===100)
                     {
                         document.getElementById('contPercent').innerHTML="SUCCESS";
@@ -133,8 +122,6 @@ $(function(){
 
                     }
                     if(!mouseMove){
-
-
                         loadPredictions();
                     }
                     mouseDown = true;
@@ -145,6 +132,7 @@ $(function(){
                     if(mouseDown){
                         mouseMove = true;
                         writeToTextPad(e);
+                        highlightKeys(e);
                     }
                     break;
                 case 'mouseup':
@@ -156,7 +144,7 @@ $(function(){
                         var bigger = Math.max(strlen($write.innerHTML), strlen(goalString));
                         var pct = (bigger - levDis) / bigger;
                         console.log($write.innerHTML + ":"+ goalString + "=" +pct);*/
-
+                        removeHighlight();
                         loadPredictions();
 
                         mouseMove = false;
@@ -167,69 +155,14 @@ $(function(){
         });
     };
 
-
-    function clearCanvas(){
-        canvasDOM = document.getElementById("swipeCanvas");
-        ctx = canvasDOM.getContext("2d");
-        ctx.clearRect(0,0, canvasDOM.width, canvasDOM.height);
-    };
-
-
-    function getXCoordinate(event){
-        var xCoor = event.clientX;
-        return xCoor;
+    function removeHighlight() {
+        $('.letter').css('background-color', '');
     }
-
-    function getYCoordinate(event){
-        var yCoor = event.clientY;
-        return yCoor;
-    }
-
-    function startUserPath(event){
-        canvasDOM = document.getElementById("swipeCanvas");
-        ctx = canvasDOM.getContext('2d');
-        var xCoor;
-        var yCoor;
-
-        if(event.target.id === "keyboard"){
-            xCoor =  event.clientX + Math.abs(event.layerX);
-            yCoor = event.screenY - event.clientY +  -(event.layerY);
-/*            xCoor = event.screenX - event.layerX;
-            yCoor = event.screenY - event.layerY;*/
-        }else{
-            xCoor =  event.clientX + Math.abs(event.layerX);
-            yCoor = event.screenY - event.clientY + -(event.layerY);
-        }
-        ctx.strokeStyle = 'blue';
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-
-        ctx.beginPath();
-        ctx.moveTo(xCoor, yCoor);
-
-    }
-
-    function traceUserPath(event){
-        var keyboardRegion = document.getElementById('keyboard');
-        canvasDOM = document.getElementById("swipeCanvas");
-        ctx = canvasDOM.getContext('2d');
-        var xCoor;
-        var yCoor;
-
-        if(event.target.id === "keyboard"){
-            xCoor =  event.clientX + Math.abs(event.layerX);
-            yCoor = event.screenY - event.clientY +  -(event.layerY) +event.offsetY;
-/*            xCoor = event.screenX - event.layerX;
-            yCoor = event.screenY - event.layerY;*/
-        }else{
-            xCoor = event.clientX + event.layerX;
-            yCoor = event.screenY - event.clientY + -(event.layerY);
-     /*       xCoor = event.offsetX;
-            yCoor = event.offsetY;*/
+    function highlightKeys(event){
+        if(event.target.className.includes('letter')){
+            event.target.style.backgroundColor = 'aquamarine';
         }
 
-        ctx.lineTo(xCoor, yCoor);
-        ctx.stroke();
     }
 
 
@@ -250,7 +183,7 @@ $(function(){
     function addCharacterToTextPad(event){
         // Add the character
         var character = event.target.innerHTML.trim().toUpperCase();
-        var highlightstr=document.getElementById("textToComplete").innerHTML;
+        var highlightstr = document.getElementById("textToComplete").innerHTML;
 
         if(previousCharacter !== character){
             currentWord += character;
@@ -267,21 +200,39 @@ $(function(){
 
         }
         previousCharacter = character;
-        if(goalString.match(currentWord))
-        {
+        console.log(currentWord);
+        highlightMatchingChar();
+    }
 
-            var index = highlightstr.lastIndexOf(character);
-            if ( index >= 0 )
-            {
-                highlightstr = highlightstr.substring(0,index) + "<span style='background-color:yellow'>" + highlightstr.substring(index,index+character.length) + "</span>" + highlightstr.substring(index + character.length);
-                document.getElementById("textToComplete").innerHTML = highlightstr;
+    function highlightMatchingChar() {
+        var typedWords = $('#write').html();
+        var highlight = "";
+
+        if (currentWord.length === 0) {
+            document.getElementById("textToComplete").innerHTML = goalString;
+        } else {
+            if (currentWord.length <= goalString.length) {
+                var index = goalString.indexOf(currentWord);
+                var endIndex = index;
+                var iterator = 1;
+                var isContiguous = true;
+                if (index >= 0) {
+                    for (var i = index + 1; i < currentWord.length; i++) {
+                        if ((goalString[i] === currentWord[iterator]) && isContiguous) {
+                            endIndex++;
+                        } else {
+                            isContiguous = false;
+                        }
+                        iterator++;
+                    }
+                }
             }
 
-            //document.getElementById("textToComplete").innerHTML='<span style="background-color:yellow">'+document.getElementById("textToComplete").innerHTML+'</span>';
+            if (endIndex >= 0) {
+                highlight = goalString.substring(0, index) + "<span style='color:lawngreen'>" + goalString.substring(index, endIndex + 1) + "</span>" + goalString.substring(endIndex + 1, goalString.length);
+                document.getElementById("textToComplete").innerHTML = highlight;
+            }
         }
-
-
-
     }
 
     function addSpaceToTextPad(){
@@ -294,8 +245,10 @@ $(function(){
     function deleteLastCharacterFromTextPad(){
         // Delete
         var html = $write.html();
-        currentWord = currentWord.substr(currentWord.length - 1);
+        currentWord = currentWord.slice(0,-1);
         $write.html(html.substr(0, html.length - 1));
+        highlightMatchingChar();
+        loadPredictions();
     }
 
 

@@ -3,12 +3,11 @@ $(function(){
     var readyToUse = false;
     var wordArray;
     var wordFreqPairArray = [];
-    var wordTrie = new Trie();
     var levenshteinDist = new Levenshtein();
     var minDistanceArr = [];
     var minTester;
     var distance;
-    var FREQ_THRESHOLD = 10;
+    var FREQ_THRESHOLD = 8;
     var WORD_LIMIT = 10;
 
     function readFile(){
@@ -29,7 +28,6 @@ $(function(){
     }
 
     Dictionary = function(){
-        this.trie = wordTrie;
         this.suggestions = [];
 
      };
@@ -56,7 +54,7 @@ $(function(){
                     minDistanceArr.sort(function (a, b) {
                         return a[1] - b[1];
                     });
-                    console.log(minDistanceArr);
+                    //console.log(minDistanceArr);
 
                     var topSuggestions = [];
                     for(var j = 0; j < 100; j++){

@@ -20,9 +20,11 @@ $(function(){
     var pathBeginY = 0;
     var canvasDOM;
     var ctx;
-    var goalString = "A QUICK BROWN FOX JUMPS OVER THE LAZY DOG";
+    var goalString = "A QUICK";
     var suggestionAdded = false;
     var eventPause = 0;
+    var levenshteinDist = new Levenshtein();
+    var counter=0
 
 
     //Initialization function
@@ -53,6 +55,7 @@ $(function(){
     function writeToTextPad(event){        
         var target = event.target;
         var operationType = getOperationType(target);
+
 
         switch(operationType){
             case 1:
@@ -114,7 +117,24 @@ $(function(){
                     obj.preLoad=true;
                     obj.play();
                     writeToTextPad(e);
+                    var levDis = levenshteinDist.get($write.html(),goalString);
+                    var bigger = Math.max($write.html().length, goalString.length);
+                    var pct = Math.round(((bigger - levDis) / bigger)*100);
+                    console.log($write.html() + ":"+ goalString + "=" +pct);
+                    if(pct===100)
+                    {
+                        document.getElementById('contPercent').innerHTML="SUCCESS";
+                        window.setTimeout('location.reload()', 3000);
+
+                    }
+                    else
+                    {
+                        document.getElementById('Percent').innerHTML=pct;
+
+                    }
                     if(!mouseMove){
+
+
                         loadPredictions();
                     }
                     mouseDown = true;
@@ -131,7 +151,14 @@ $(function(){
                     e.preventDefault();
                     document.getElementById("autoSuggestion").innerHTML = "";
                     if(mouseMove === true && mouseDown === true){
+                        /*
+                        var levDis = levenshteinDist.get($write.innerHTML,goalString);
+                        var bigger = Math.max(strlen($write.innerHTML), strlen(goalString));
+                        var pct = (bigger - levDis) / bigger;
+                        console.log($write.innerHTML + ":"+ goalString + "=" +pct);*/
+
                         loadPredictions();
+
                         mouseMove = false;
                     }
                     mouseDown = false;
@@ -222,7 +249,9 @@ $(function(){
 
     function addCharacterToTextPad(event){
         // Add the character
-        var character = event.target.innerHTML.trim();
+        var character = event.target.innerHTML.trim().toUpperCase();
+        var highlightstr=document.getElementById("textToComplete").innerHTML;
+
         if(previousCharacter !== character){
             currentWord += character;
             startTime = event.timeStamp;
@@ -238,6 +267,21 @@ $(function(){
 
         }
         previousCharacter = character;
+        if(goalString.match(currentWord))
+        {
+
+            var index = highlightstr.lastIndexOf(character);
+            if ( index >= 0 )
+            {
+                highlightstr = highlightstr.substring(0,index) + "<span style='background-color:yellow'>" + highlightstr.substring(index,index+character.length) + "</span>" + highlightstr.substring(index + character.length);
+                document.getElementById("textToComplete").innerHTML = highlightstr;
+            }
+
+            //document.getElementById("textToComplete").innerHTML='<span style="background-color:yellow">'+document.getElementById("textToComplete").innerHTML+'</span>';
+        }
+
+
+
     }
 
     function addSpaceToTextPad(){

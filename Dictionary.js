@@ -62,6 +62,7 @@ $(function(){
                     for(var j = 0; j < 100; j++){
                         if(minDistanceArr[j][2] >= FREQ_THRESHOLD){
                             if(topSuggestions.length <= WORD_LIMIT){
+                                //if(minDistanceArr[j][0][0]===str[0] && minDistanceArr[j][0][minDistanceArr[j][0].length-1]==str[str.length-1])
                                 topSuggestions.push(minDistanceArr[j][0]);
                             }else{
                                 break;

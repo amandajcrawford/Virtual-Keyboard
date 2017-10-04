@@ -23,7 +23,7 @@ CORS(app)
 
 
 WORDS = list()
-for i in open('words.txt'):
+for i in open('wordf.txt'):
     WORDS.append(i.split(',')[0].lower())
 
 
@@ -86,7 +86,6 @@ def return_suggestion():
         #word = request.json['word']
         suggestions = get_suggestion(request.form['data'])
         data = {'suggestions': suggestions}
-        print suggestions
         resp = jsonify(data)
         resp.status_code = 200
         return resp

@@ -1,12 +1,15 @@
-# Virtual-Keyboard
+
+#Virtual-Keyboard
 CS2610 - Interface Design and Evaluation
 
 
 How To Run
+------------------------------------------
 
 Requirements:
 -- Node JS
 -- NPM
+-- RequireJS - npm install -g requirejs
 
 1. Download and unzip the project into appropiate directory.
 2. Using the command line, cd into the directory where you saved the project.

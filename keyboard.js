@@ -21,6 +21,8 @@ $(function(){
     var canvasDOM;
     var ctx;
     var goalString = "ACTIONS SPEAK LOUDER THAN WORDS";
+    var incompleteGoalIndex = 0;
+    var typedWordsIndex = 0;
     var goalStringArr = goalString.split(" ");
     var goalWord = goalStringArr[0];
     var suggestionAdded = false;
@@ -135,7 +137,7 @@ $(function(){
                         mouseMove = true;
                         var angle = getMouseAngle(e);
                         var char = event.target.innerHTML;
-                        if((angle >= 15 &&
+                        if((angle >= 12 &&
                         angle <= 270)|| prevX === undefined){
                             writeToTextPad(e);
                             highlightKeys(e);
@@ -224,8 +226,7 @@ $(function(){
             }
 
         }
-        previousCharacter = character;
-        console.log(currentWord);
+        previousCharacter = character;        
         highlightMatchingChar();
     }
 
@@ -233,28 +234,41 @@ $(function(){
         var typedWords = $('#write').html();
         var highlight = "";
 
-        if (currentWord.length === 0) {
+        if (typedWords.length === 0) {
             document.getElementById("textToComplete").innerHTML = goalString;
         } else {
-            if (currentWord.length <= goalString.length) {
-                var index = goalString.indexOf(currentWord);
+            if (typedWords.length <= goalString.length) {
+                //var incompleteString = goalString.slice(incompleteGoalIndex);
+                var index = goalString.indexOf(typedWords);
+                //var index = incompleteString.indexOf(typedWords);
                 var endIndex = index;
-                var iterator = 1;
+                //var iterator = 1;
+                var iterator = 0;
                 var isContiguous = true;
+                             
                 if (index >= 0) {
-                    for (var i = index + 1; i < currentWord.length; i++) {
-                        if ((goalString[i] === currentWord[iterator]) && isContiguous) {
+                    for (var i = index; i < goalString.length; i++) {
+                        if(iterator < typedWords.length){
+                          if (goalString[i].match(typedWords.charAt(iterator)) && isContiguous) {
                             endIndex++;
                         } else {
                             isContiguous = false;
+                            if(goalString[i].match(typedWords.charAt(iterator))){
+                                isContiguous = true;
+                                index = i;
+                                endIndex = i;
+
+                            }
                         }
                         iterator++;
+                        }
+
                     }
                 }
             }
 
             if (endIndex >= 0) {
-                highlight = goalString.substring(0, index) + "<span style='color:lawngreen'>" + goalString.substring(index, endIndex + 1) + "</span>" + goalString.substring(endIndex + 1, goalString.length);
+                highlight = goalString.substring(0, index) + "<span style='color:lawngreen'>" + goalString.substring(index, endIndex ) + "</span>" + goalString.substring(endIndex , goalString.length);
                 document.getElementById("textToComplete").innerHTML = highlight;
             }
         }
@@ -289,7 +303,7 @@ $(function(){
                     (function () {
                         var b = document.createElement('button');
                         b.innerHTML = data[i];
-                        b.className = 'suggestionButtons btn btn-sm btn-secondary';
+                        b.className = 'suggestionButtons btn btn-sm btn-secondary container-fluid';
                         b.type = "button";
                         b.id = data[i];
                         suggestionRow.appendChild(b);

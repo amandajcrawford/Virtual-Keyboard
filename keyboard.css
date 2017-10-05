@@ -28,8 +28,8 @@ body {
 }
 
 #container {
-    margin: 100px auto;
-    width: 688px;
+    margin: 50px auto;
+    width: 950px;
     color:black !important;
     font-weight: bolder;
     font-size: 20px;
@@ -56,8 +56,8 @@ body {
 #keyboard div {
     float: left;
     margin: 0 5px 5px 0;
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     line-height: 40px;
     text-align: center;
     background: #fff;
@@ -84,7 +84,7 @@ body {
 }
 
 #keyboard .space {
-    width: 500px;
+    width: 600px;
 }
 
 .on {
@@ -102,13 +102,6 @@ body {
     position: relative;
 }
 
-canvas {
-    overflow: visible;
-    pointer-events: none;
-    position:absolute;
-    z-index: 5;
-    background-color: transparent;
-}
 
 #keyboard:after {
     content: ".";

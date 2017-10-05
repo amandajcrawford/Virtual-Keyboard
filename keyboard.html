@@ -10,12 +10,12 @@
 </head>
 <body>
 <div id="headContainer" >
-        <div class="h3 text-center " style="padding: 20px;">JS Keyboard</div>
-        <div class="h2 display-3 text-center" style="padding-bottom: 20px;
+        <div class="h4 text-center " style="padding: 20px;">JS Keyboard</div>
+        <div class="h3 display-4 text-center" style="padding-bottom: 20px;
         color:lightslategray; font-weight: bolder;" id="textToComplete"></div>
 </div>
 
-<div id="container" class="container">
+<div id="container" >
         <div class="row">
                 <div class="text-center block-display" style="margin-bottom: 10px; color:#00ffff;" id="contPercent"> You are <span id='Percent'> 0 </span>% there!</div>
         </div>
@@ -23,10 +23,10 @@
         <div class="row">
                 <textarea class="col-12" id="write" rows="6" cols="60"></textarea>
         </div>
-        <div class="row container-fluid">
-                <div class="col-1"></div>
-                <div id="autoSuggestion" class="col-12 btn-group btn-group-sm" role="group" style="margin-bottom: 10px; overflow-wrap: break-word;"></div>
-                <div class="col-1"></div>
+        <div class="row">
+               <!-- <div class="col-1"></div>-->
+                <div id="autoSuggestion" class="btn-group btn-group-sm"  style=" height:80px; margin-bottom: 10px; width:100%; -ms-text-overflow: ellipsis;text-overflow: ellipsis; overflow: hidden;"></div>
+               <!-- <div class="col-1"></div>-->
         </div>
         <div class="row" id="keyboardRegion">
                 <div id="keyboard" class="col-12">
@@ -57,7 +57,7 @@
                         <div class="letter">B</div>
                         <div class="letter">N</div>
                         <div class="letter lastitem">M</div>
-                        <div class="space" style="margin-left: 70px;">&nbsp;</div>
+                        <div class="space" style="margin-left: 125px;">&nbsp;</div>
                 </div>
         </div>
 </div>

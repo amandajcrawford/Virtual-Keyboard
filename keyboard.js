@@ -135,9 +135,8 @@ $(function(){
                         mouseMove = true;
                         var angle = getMouseAngle(e);
                         var char = event.target.innerHTML;
-                        console.log(angle);
-                        if(angle >= 10 &&
-                        angle <= 270){
+                        if((angle >= 15 &&
+                        angle <= 270)|| prevX === undefined){
                             writeToTextPad(e);
                             highlightKeys(e);
                         }

@@ -1,19 +1,50 @@
+/*
+Part of codes adopted from
+Envato
+https://code.tutsplus.com/tutorials/creating-a-keyboard-with-css-and-jquery--net-5774
+
+*/
+@font-face {
+    font-family: Sarah;
+    src: url('SarahSans.eot');
+    src: url('SarahSans.eot?#iefix') format('embedded-opentype'),
+    url('SarahSans.woff') format('woff'),
+    url('SarahSans.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
 * {
     margin: 0;
     padding: 0;
+
 }
 body {
-    font: 71%/1.5 Verdana, Sans-Serif;
-    background: #eee;
+    font: 71%/1.5  'Sarah', sans-serif !important;
+    background-color:#673ab7!important;
+    height: 100%;
+    overflow: hidden;
+
+
 }
+#headContainer{
+    padding-top: 10px;
+    background-color: white;
+}
+
 #container {
-    margin: 100px auto;
-    width: 688px;
+    margin: 50px auto;
+    width: 800px;
+    color:black !important;
+    font-weight: bolder;
+    font-size: 20px;
+
 }
 #write {
     margin: 0 0 5px;
     padding: 5px;
-    width: 671px;
+    width: 700px;
     height: 200px;
     font: 1em/1.5 Verdana, Sans-Serif;
     background: #fff;
@@ -23,14 +54,16 @@ body {
 }
 #keyboard {
     margin: 0;
+    position: relative;
     padding: 0;
-    list-style: none;
+/*    list-style: none;*/
+    z-index: 1;
 }
 #keyboard div {
     float: left;
     margin: 0 5px 5px 0;
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     line-height: 40px;
     text-align: center;
     background: #fff;
@@ -38,41 +71,49 @@ body {
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
 }
-.capslock, .tab, .left-shift {
+.firstRow, .secondRow, .thirdRow, .space{
     clear: left;
 }
-#keyboard .tab, #keyboard .delete {
-    width: 70px;
-}
-#keyboard .capslock {
-    width: 80px;
-}
-#keyboard .return {
-    width: 77px;
-}
-#keyboard .left-shift {
+
+
+#keyboard .delete {
     width: 95px;
 }
-#keyboard .right-shift {
+#keyboard .return {
     width: 109px;
 }
 .lastitem {
     margin-right: 0;
 }
-.uppercase {
+.letter {
     text-transform: uppercase;
 }
+
 #keyboard .space {
-    clear: left;
-    width: 681px;
+    width: 620px;
 }
+
 .on {
     display: none;
 }
-#keyboard li:hover {
+#keyboard div:hover {
     position: relative;
     top: 1px;
     left: 1px;
+    background-color: aquamarine;
     border-color: #e5e5e5;
     cursor: pointer;
+}
+#keyboardRegion{
+    position: relative;
+}
+
+
+#keyboard:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
 }

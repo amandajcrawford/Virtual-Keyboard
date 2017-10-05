@@ -2,79 +2,72 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Online Keyboard</title>
     <link rel="stylesheet" type="text/css" href="keyboard.css" />
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 </head>
 <body>
-
-<div id="container">
-    <textarea id="write" rows="6" cols="60"></textarea>
-    <div id="keyboardRegion">
-    <ul id="keyboard">
-<!--        <div class="symbol"><span class="off">`</span><span class="on">~</span></div>
-        <div class="symbol"><span class="off">1</span><span class="on">!</span></div>
-        <div class="symbol"><span class="off">2</span><span class="on">@</span></div>
-        <div class="symbol"><span class="off">3</span><span class="on">#</span></div>
-        <div class="symbol"><span class="off">4</span><span class="on">$</span></div>
-        <div class="symbol"><span class="off">5</span><span class="on">%</span></div>
-        <div class="symbol"><span class="off">6</span><span class="on">^</span></div>
-        <div class="symbol"><span class="off">7</span><span class="on">&amp;</span></div>
-        <div class="symbol"><span class="off">8</span><span class="on">*</span></div>
-        <div class="symbol"><span class="off">9</span><span class="on">(</span></div>
-        <div class="symbol"><span class="off">0</span><span class="on">)</span></div>
-        <div class="symbol"><span class="off">-</span><span class="on">_</span></div>
-        <div class="symbol"><span class="off">=</span><span class="on">+</span></div>-->
-        <div class="delete lastitem">delete</div>
-<!--        <div class="tab" id="demo">tab</div>-->
-        <div class="letter">q</div>
-        <div class="letter">w</div>
-        <div class="letter">e</div>
-        <div class="letter">r</div>
-        <div class="letter">t</div>
-        <div class="letter">y</div>
-        <div class="letter">u</div>
-        <div class="letter">i</div>
-        <div class="letter">o</div>
-        <div class="letter">p</div>
-        <div class="symbol"><span class="off">[</span><span class="on">{</span></div>
-        <div class="symbol"><span class="off">]</span><span class="on">}</span></div>
-        <div class="symbol lastitem"><span class="off">\</span><span class="on">|</span></div>
-        <div class="capslock">caps lock</div>
-        <div class="letter">a</div>
-        <div class="letter">s</div>
-        <div class="letter">d</div>
-        <div class="letter">f</div>
-        <div class="letter">g</div>
-        <div class="letter">h</div>
-        <div class="letter">j</div>
-        <div class="letter">k</div>
-        <div class="letter">l</div>
-        <div class="symbol"><span class="off">;</span><span class="on">:</span></div>
-        <div class="symbol"><span class="off">'</span><span class="on">&quot;</span></div>
-        <div class="return lastitem">return</div>
-<!--        <div class="left-shift">shift</div>-->
-        <div class="letter">z</div>
-        <div class="letter">x</div>
-        <div class="letter">c</div>
-        <div class="letter">v</div>
-        <div class="letter">b</div>
-        <div class="letter">n</div>
-        <div class="letter">m</div>
-        <div class="symbol"><span class="off">,</span><span class="on">&lt;</span></div>
-        <div class="symbol"><span class="off">.</span><span class="on">&gt;</span></div>
-        <div class="symbol"><span class="off">/</span><span class="on">?</span></div>
-<!--        <div class="right-shift lastitem">shift</div>-->
-        <li class="space lastitem">&nbsp;</li>
-
-
-    </ul>
-    </div>
+<div id="headContainer" >
+        <div class="h4 text-center " style="padding: 20px;">JS Keyboard</div>
+        <div class="h3 display-4 text-center" style="padding-bottom: 20px;
+        color:lightslategray; font-weight: bolder;" id="textToComplete"></div>
 </div>
 
+<div id="container" >
+        <div class="row">
+                <div class="text-center block-display" style="margin-bottom: 10px; color:#00ffff;" id="contPercent"> You are <span id='Percent'> 0 </span>% there!</div>
+        </div>
+
+        <div class="row">
+                <textarea class="col-12" id="write" rows="6" cols="60"></textarea>
+        </div>
+        <div class="row">
+
+                <div id="autoSuggestion" class="btn-group btn-group-sm" style=" height:80px; margin-bottom: 10px; width:100%; -ms-text-overflow: ellipsis;text-overflow: ellipsis; overflow: hidden;"></div>
+
+        </div>
+        <div class="row" id="keyboardRegion">
+                <div id="keyboard" class="col-12">
+                        <div class="letter firstRow" style="margin-left: 45px;">q</div>
+                        <div class="letter">W</div>
+                        <div class="letter">E</div>
+                        <div class="letter">R</div>
+                        <div class="letter">T</div>
+                        <div class="letter">Y</div>
+                        <div class="letter">U</div>
+                        <div class="letter">I</div>
+                        <div class="letter">O</div>
+                        <div class="letter">P</div>
+                        <div class="delete lastitem">delete</div>
+                        <div class="letter secondRow" style="margin-left: 100px;">a</div>
+                        <div class="letter">S</div>
+                        <div class="letter">D</div>
+                        <div class="letter">F</div>
+                        <div class="letter">G</div>
+                        <div class="letter">H</div>
+                        <div class="letter">J</div>
+                        <div class="letter">K</div>
+                        <div class="letter lastitem">L</div>
+                        <div class="letter thirdRow" style="margin-left: 125px;">z</div>
+                        <div class="letter">X</div>
+                        <div class="letter">C</div>
+                        <div class="letter">V</div>
+                        <div class="letter">B</div>
+                        <div class="letter">N</div>
+                        <div class="letter lastitem">M</div>
+                        <div class="space" style="margin-left: 90px;">&nbsp;</div>
+                </div>
+        </div>
+</div>
+
+
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+<script type="text/javascript" src="Levenshtein.js"></script>
+<script type="text/javascript" src="Dictionary.js"></script>
 <script type="text/javascript" src="keyboard.js"></script>
-<script src='zingtouch-master/dist/zingtouch.min.js'></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/zingtouch/1.0.5/zingtouch.min.js"></script>
 </body>
 </html>

@@ -4,46 +4,70 @@
 
 $(function(){
     var $write = $('#write');
+    $write.html("");
     var browser = navigator.appName; // will need to get more efficient name
+    var previousCharacter;
+    var startTime;
+    var duration = 0;
+    var threshold = 500;
+    var doubleSet = false;
+    var currentWord = "";
+    var autoSuggestion = new Dictionary();
+    var mouseDown = false;
+    var mouseMove = false;
+    var clickEvent = false;
+    var pathBeginX = 0;
+    var pathBeginY = 0;
+    var canvasDOM;
+    var ctx;
+    var goalString = "ACTIONS SPEAK LOUDER THAN WORDS";
+    var incompleteGoalIndex = 0;
+    var typedWordsIndex = 0;
+    var goalStringArr = goalString.split(" ");
+    var goalWord = goalStringArr[0];
+    var suggestionAdded = false;
+    var eventPause = 0;
+    var levenshteinDist = new Levenshtein();
+    var counter=0;
+    var prevX;
+    var prevY;
+
 
     //Initialization function
     var init = function(){
-        setupEventListeners();
+        document.getElementById('textToComplete').innerHTML = goalString;
+        setupKeyBoardEventListeners();
     };
 
-    var setupEventListeners = function(){
-        //Setup the active region for the touch events
-        var containerElement = document.getElementById('container');        // Get Container Region
-        var activeRegion = new ZingTouch.Region(containerElement);
-        var keyboardRegion = document.getElementById('keyboard');         // Get Keyboard Region DOM element
+     function writeWordToPad(event){
+        suggestionAdded = true;
+        var suggestionRow = document.getElementById("autoSuggestion");
+        document.getElementById("autoSuggestion").innerHTML = "";
+        var currentText = $('#write').html();
+        var textWords = currentText.split(" ").splice(-1);
+        textWords.append( event.target.id);
+        textWords.join(" ");
+        $('#write').html( textWords);
+        currentWord = event.target.id;
 
-        //attach event listener for pan (touch and drag event)
-
-        activeRegion.bind(keyboardRegion, 'pan', function(e){
-            monitorPanMotion(e);
-        });
-
-        //attach event listener for tap( similar to the click function)
-        activeRegion.bind(keyboardRegion, 'tap', function(e){
-            writeToTextPad(e);
-        });
-    };
-
-    function writeToTextPad(event){
-        console.log(event);
-        var target = event.detail.events['0'].originalEvent.target;
-        //var target= event.detail.events["0"].originalEvent.path["0"];
+        highlightMatchingChar();
+        currentWord = "";
+     }
+    
+    function writeToTextPad(event){        
+        var target = event.target;
         var operationType = getOperationType(target);
+
 
         switch(operationType){
             case 1:
-                addCharacterToTextPad(target);
+                addCharacterToTextPad(event);
                 break;
             case 2:
-                addSpaceToTextPad(target);
+                addSpaceToTextPad();
                 break;
             case 3:
-                deleteLastCharacterFromTextPad(target);
+                deleteLastCharacterFromTextPad();
                 break;
             default:
                 break;
@@ -51,42 +75,248 @@ $(function(){
 
     }
 
+
+    var setupKeyBoardEventListeners = function(){
+        // Get Keyboard Region DOM element
+        var keyboardRegion = document.getElementById('keyboard');
+        //add event listeners
+        $('#autoSuggestion').off().on('click', '.suggestionButtons', function(event){
+            suggestionAdded = true;
+            document.getElementById("autoSuggestion").innerHTML = "";
+            var currentText = $('#write').html();
+            var textWords = currentText.split(" ").slice(0, -1);
+            if(textWords.length === 0){
+                textWords = event.target.id;
+            }else{
+                textWords.push( event.target.id);
+                textWords =textWords.join(" ");
+            }
+            $('#write').html("");
+            $('#write').html( textWords + " ");
+            currentWord = event.target.id;
+            highlightMatchingChar();
+            currentWord = "";
+
+        });
+
+        $(keyboardRegion).on('mousemove mousedown mouseup', function(e){
+            switch(e.type){
+                case 'mousedown':
+                    e.preventDefault();
+                    var obj = document.createElement("audio");
+                    obj.src="https://kahimyang.com/resources/sound/click.mp3";
+                    obj.volume=0.10;
+                    obj.autoPlay=false;
+                    obj.preLoad=true;
+                    obj.play();
+                    writeToTextPad(e);
+                    var levDis = levenshteinDist.get($write.html(),goalString);
+                    var bigger = Math.max($write.html().length, goalString.length);
+                    var pct = Math.round(((bigger - levDis) / bigger)*100);
+                    if(pct===100)
+                    {
+                        document.getElementById('contPercent').innerHTML="SUCCESS";
+                        window.setTimeout('location.reload()', 3000);
+
+                    }
+                    else
+                    {
+                        document.getElementById('Percent').innerHTML=pct;
+
+                    }
+                    if(!mouseMove){
+                        loadPredictions();
+                    }
+                    mouseDown = true;
+                    break;
+                case 'mousemove':
+                    e.preventDefault();
+
+                    if(mouseDown){
+                        mouseMove = true;
+                        var angle = getMouseAngle(e);
+                        var char = event.target.innerHTML;
+                        if((angle >= 15 &&
+                        angle <= 270)|| prevX === undefined){
+                            writeToTextPad(e);
+                            highlightKeys(e);
+                        }
+                    }
+                    break;
+                case 'mouseup':
+                    e.preventDefault();
+                    document.getElementById("autoSuggestion").innerHTML = "";
+                    if(mouseMove === true && mouseDown === true){
+                        /*
+                        var levDis = levenshteinDist.get($write.innerHTML,goalString);
+                        var bigger = Math.max(strlen($write.innerHTML), strlen(goalString));
+                        var pct = (bigger - levDis) / bigger;
+                        console.log($write.innerHTML + ":"+ goalString + "=" +pct);*/
+                        removeHighlight();
+                        loadPredictions();
+
+                        mouseMove = false;
+                    }
+                    mouseDown = false;
+                    break;
+            }
+        });
+    };
+
+    function getMouseAngle(event){
+        var currX = event.pageX;
+        var currY = event.pageY;
+        
+        if(prevX == undefined || prevY == undefined){
+            prevX = currX;
+            prevY = currY;
+        }
+        
+
+        var distX = Math.abs(prevX - currX);
+        var distY = Math.abs(prevY - currY);
+        var dist = distY/Math.sqrt(Math.pow(distX,2)+ Math.pow(distY,2));
+        prevX = currX;
+        prevY = currY;
+        return Math.asin(dist)*(180/Math.PI);
+    }
+
+    function removeHighlight() {
+        $('.letter').css('background-color', '');
+    }
+    function highlightKeys(event){
+        if(event.target.className.includes('letter')){
+            event.target.style.backgroundColor = 'aquamarine';
+        }
+
+    }
+
+
     function getOperationType(target){
         var operation = null;
         var className =target.className;
 
         if(className.includes('letter')){
             operation = 1;
-        }
-        if(className.includes('space')){
+        }else if(className.includes('space')){
             operation = 2;
-        }
-
-        if(className.includes('delete')){
+        }else if(className.includes('delete')){
             operation = 3
         }
         return operation;
     }
 
-    function addCharacterToTextPad(target){
+    function addCharacterToTextPad(event){
         // Add the character
-        var character = target.innerHTML;
-        $write.html($write.html() + character);
+        var character = event.target.innerHTML.trim().toUpperCase();
+        var highlightstr = document.getElementById("textToComplete").innerHTML;
+
+        if(previousCharacter !== character){
+            currentWord += character;
+            startTime = event.timeStamp;
+            doubleSet = false;
+            $write.html($write.html() + character);
+        }else{
+            var diff = event.timeStamp - startTime;
+            if(diff >= threshold && !doubleSet){
+                doubleSet = true;
+                currentWord += character;
+                $write.html($write.html() + previousCharacter);
+            }
+
+        }
+        previousCharacter = character;        
+        highlightMatchingChar();
+    }
+
+    function highlightMatchingChar() {
+        var typedWords = $('#write').html();
+        var highlight = "";
+
+        if (typedWords.length === 0) {
+            document.getElementById("textToComplete").innerHTML = goalString;
+        } else {
+            if (typedWords.length <= goalString.length) {
+                //var incompleteString = goalString.slice(incompleteGoalIndex);
+                var index = goalString.indexOf(typedWords);
+                //var index = incompleteString.indexOf(typedWords);
+                var endIndex = index;
+                //var iterator = 1;
+                var iterator = 0;
+                var isContiguous = true;
+                             
+                if (index >= 0) {
+                    for (var i = index; i < goalString.length; i++) {
+                        if(iterator < typedWords.length){
+                          if (goalString[i].match(typedWords.charAt(iterator)) && isContiguous) {
+                            endIndex++;
+                        } else {
+                            isContiguous = false;
+                            if(goalString[i].match(typedWords.charAt(iterator))){
+                                isContiguous = true;
+                                index = i;
+                                endIndex = i;
+
+                            }
+                        }
+                        iterator++;
+                        }
+
+                    }
+                }
+            }
+
+            if (endIndex >= 0) {
+                highlight = goalString.substring(0, index) + "<span style='color:lawngreen'>" + goalString.substring(index, endIndex ) + "</span>" + goalString.substring(endIndex , goalString.length);
+                document.getElementById("textToComplete").innerHTML = highlight;
+            }
+        }
+    }
+
+    function addSpaceToTextPad(){
+        // Space
+        var html = $write.html();
+        currentWord = " "; //the start of a new word
+        $write.html($write.html() + " ");
     }
 
     function deleteLastCharacterFromTextPad(){
         // Delete
         var html = $write.html();
+        currentWord = currentWord.slice(0,-1);
         $write.html(html.substr(0, html.length - 1));
+        highlightMatchingChar();
+        loadPredictions();
     }
 
-    function addSpaceToTextPad(target){
-        // Add space to text pad
-        $write.html($write.html() + " ");
+
+
+    function loadPredictions(){
+        var suggestionRow = document.getElementById("autoSuggestion");
+        var swipe = false
+         if(mouseDown === true && mouseMove === false){
+             swipe = true;
+         }
+            autoSuggestion.getPossibleWords(currentWord, swipe).then(function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    (function () {
+                        var b = document.createElement('button');
+                        b.innerHTML = data[i];
+                        b.className = 'suggestionButtons btn btn-sm btn-secondary';
+                        b.style.color = 'white';
+                        b.style.fontWeight = 'bolder';
+                        b.type = "button";
+                        b.id = data[i];
+                        suggestionRow.appendChild(b);
+                    }());
+                }
+
+                eventPause--;
+
+            });
+        
     }
 
-    function monitorPanMotion(event){
-        writeToTextPad(event);
-    }
+
     init();
 });

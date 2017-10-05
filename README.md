@@ -1,7 +1,8 @@
+Amanda Crawford
+Krithika Ganesh
 
 #Virtual-Keyboard
 CS2610 - Interface Design and Evaluation
-
 
 How To Run
 ------------------------------------------

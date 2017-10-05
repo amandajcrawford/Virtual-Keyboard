@@ -113,7 +113,6 @@ $(function(){
                     var levDis = levenshteinDist.get($write.html(),goalString);
                     var bigger = Math.max($write.html().length, goalString.length);
                     var pct = Math.round(((bigger - levDis) / bigger)*100);
-/*                    console.log($write.html() + ":"+ goalString + "=" +pct);*/
                     if(pct===100)
                     {
                         document.getElementById('contPercent').innerHTML="SUCCESS";

@@ -1,3 +1,12 @@
+/* - Krishna Bharadwaj
+- October 5, 2017
+- Swype Py
+- Source Code
+- Availability (e.g. program publisher, URL)thub User -
+    https://gist.github.com/krisys/1059818
+ */
+
+
 $(function(){
     var file = "words.txt";
     var readyToUse = false;

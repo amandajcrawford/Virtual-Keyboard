@@ -1,5 +1,11 @@
 $(function() {
-    //https://github.com/hiddentao/fast-levenshtein/blob/master/levenshtein.js
+    /* - HiddenTao
+    - October 5, 2017
+    - Fast Levenshtein
+    - Source Code
+    - Availability (e.g. program publisher, URL)thub User -
+        https://github.com/hiddentao/fast-levenshtein/blob/master/levenshtein.js
+     */
 
     var collator;
     try {

@@ -137,7 +137,7 @@ $(function(){
                         mouseMove = true;
                         var angle = getMouseAngle(e);
                         var char = event.target.innerHTML;
-                        if((angle >= 12 &&
+                        if((angle >= 15 &&
                         angle <= 270)|| prevX === undefined){
                             writeToTextPad(e);
                             highlightKeys(e);
@@ -303,7 +303,9 @@ $(function(){
                     (function () {
                         var b = document.createElement('button');
                         b.innerHTML = data[i];
-                        b.className = 'suggestionButtons btn btn-sm btn-secondary container-fluid';
+                        b.className = 'suggestionButtons btn btn-sm btn-secondary';
+                        b.style.color = 'white';
+                        b.style.fontWeight = 'bolder';
                         b.type = "button";
                         b.id = data[i];
                         suggestionRow.appendChild(b);

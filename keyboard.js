@@ -26,7 +26,9 @@ $(function(){
     var suggestionAdded = false;
     var eventPause = 0;
     var levenshteinDist = new Levenshtein();
-    var counter=0
+    var counter=0;
+    var prevX;
+    var prevY;
 
 
     //Initialization function
@@ -131,8 +133,14 @@ $(function(){
 
                     if(mouseDown){
                         mouseMove = true;
-                        writeToTextPad(e);
-                        highlightKeys(e);
+                        var angle = getMouseAngle(e);
+                        var char = event.target.innerHTML;
+                        console.log(angle);
+                        if(angle >= 10 &&
+                        angle <= 270){
+                            writeToTextPad(e);
+                            highlightKeys(e);
+                        }
                     }
                     break;
                 case 'mouseup':
@@ -154,6 +162,24 @@ $(function(){
             }
         });
     };
+
+    function getMouseAngle(event){
+        var currX = event.pageX;
+        var currY = event.pageY;
+        
+        if(prevX == undefined || prevY == undefined){
+            prevX = currX;
+            prevY = currY;
+        }
+        
+
+        var distX = Math.abs(prevX - currX);
+        var distY = Math.abs(prevY - currY);
+        var dist = distY/Math.sqrt(Math.pow(distX,2)+ Math.pow(distY,2));
+        prevX = currX;
+        prevY = currY;
+        return Math.asin(dist)*(180/Math.PI);
+    }
 
     function removeHighlight() {
         $('.letter').css('background-color', '');
@@ -255,8 +281,11 @@ $(function(){
 
     function loadPredictions(){
         var suggestionRow = document.getElementById("autoSuggestion");
-         
-            autoSuggestion.getPossibleWords(currentWord).then(function (data) {
+        var swipe = false
+         if(mouseDown === true && mouseMove === false){
+             swipe = true;
+         }
+            autoSuggestion.getPossibleWords(currentWord, swipe).then(function (data) {
                 for (var i = 0; i < data.length; i++) {
                     (function () {
                         var b = document.createElement('button');

@@ -1,13 +1,14 @@
-Amanda Crawford &Krithika Ganesh
+Amanda Crawford & Krithika Ganesh
+#### CS2610 - Interface Design and Evaluation
 -------------------------------
 
 # Virtual-Keyboard
-### CS2610 - Interface Design and Evaluation
+
 
 How To Run
 ------------------------------------------
 
-### Requirements:
+### Requirements
 + Node JS
 + NPM
 + RequireJS - npm install -g requirejs

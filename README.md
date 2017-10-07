@@ -1,17 +1,18 @@
-Amanda Crawford
-Krithika Ganesh
+Amanda Crawford &Krithika Ganesh
+-------------------------------
 
-#Virtual-Keyboard
-CS2610 - Interface Design and Evaluation
+# Virtual-Keyboard
+### CS2610 - Interface Design and Evaluation
 
 How To Run
 ------------------------------------------
 
-Requirements:
--- Node JS
--- NPM
--- RequireJS - npm install -g requirejs
+### Requirements:
++ Node JS
++ NPM
++ RequireJS - npm install -g requirejs
 
+### Instructions
 1. Download and unzip the project into appropiate directory.
 2. Using the command line, cd into the directory where you saved the project.
 3. Once in the directory, type in the command "npm install"

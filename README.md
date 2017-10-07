@@ -1,12 +1,10 @@
-Amanda Crawford & Krithika Ganesh
-#### CS2610 - Interface Design and Evaluation
--------------------------------
+# Amanda Crawford & Krithika Ganesh
+CS2610 - Interface Design and Evaluation
 
 # Virtual-Keyboard
 
 
-How To Run
-------------------------------------------
+# How To Run
 
 ### Requirements
 + Node JS

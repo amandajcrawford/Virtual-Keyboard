@@ -16,7 +16,7 @@ $(function(){
     var minDistanceArr = [];
     var minTester;
     var distance;
-    var FREQ_THRESHOLD = 5;
+    var FREQ_THRESHOLD = 6;
     var WORD_LIMIT = 10;
     var KEYBRD_LAYOUT = ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'];
 
